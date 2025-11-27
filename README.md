@@ -249,14 +249,11 @@ src/
 - User → Rentals (one-to-many)
 - Car → Rentals (one-to-many)
 - Rental → Payments (one-to-many)
-- User → Roles (many-to-many)
+- User → Roles (one-to-many)
 
 ## 🐳 Docker Support
 
-**Coming soon** Docker configuration will be added with:
-- Multi-stage Dockerfile
-- Docker Compose with PostgreSQL and Redis
-- Production-ready container setup
+Containerized deployment with multi-stage Dockerfile for optimized image size and production readiness.
 
 ## 📈 Performance
 
@@ -277,7 +274,7 @@ This is a learning project, but suggestions are welcome!
 
 ## 📝 License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is open source and available under the MIT License.
 
 ## 👤 Author
 
@@ -308,12 +305,13 @@ Through this project, I gained practical experience with:
 - JWT authentication
 - Integration tests
 - API documentation
-
+- Docker support
+- Cloud deployment (Railway)
 
 **📋 Possible Future Enhancements:**
-- Docker support
-- Cloud deployment
-- Advanced caching
+- Redis caching
+- CI/CD pipeline
+- Advanced monitoring
 
 > This project achieved its learning goals. Additional features may be added based on interest.
 > 
