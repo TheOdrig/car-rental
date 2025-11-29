@@ -56,6 +56,14 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PATCH, "/api/cars/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/cars/**").hasRole("ADMIN")
 
+                .requestMatchers(HttpMethod.GET, "/api/exchange-rates/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/exchange-rates/convert").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/exchange-rates/refresh").hasRole("ADMIN")
+
+                .requestMatchers(HttpMethod.GET, "/api/pricing/preview").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/pricing/strategies").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/pricing/calculate").authenticated()
+
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

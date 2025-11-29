@@ -20,6 +20,7 @@ This project was developed as a learning exercise to solidify Spring Boot knowle
 - **User Management** - Registration, authentication with JWT
 - **Car Catalog** - Browse available vehicles with filtering and pagination
 - **Rental Process** - Request → Confirm → Pickup → Return workflow
+- **Dynamic Pricing** - Intelligent pricing with 5 strategies (season, early booking, duration, weekend, demand)
 - **Role-Based Access** - Separate permissions for users and administrators
 - **Admin Operations** - Manage cars, rentals, and users via REST API
 
@@ -27,6 +28,7 @@ This project was developed as a learning exercise to solidify Spring Boot knowle
 - RESTful API design with proper HTTP methods and status codes
 - JWT-based stateless authentication
 - Role-based authorization (USER, ADMIN)
+- Dynamic pricing engine with strategy pattern
 - Database migrations with Flyway
 - Input validation and error handling
 - API documentation with Swagger/OpenAPI
@@ -87,6 +89,23 @@ JWT_SECRET=your-secure-secret-key-here-minimum-256-bits
 JWT_ACCESS_TOKEN_EXPIRATION=900000
 JWT_REFRESH_TOKEN_EXPIRATION=604800000
 ```
+
+### Pricing Configuration (Optional)
+
+Default pricing values are pre-configured. Override in `application.properties` if needed:
+
+```properties
+# Example: Increase peak season surcharge
+pricing.season.peak.multiplier=1.30
+
+# Example: Better early booking discount
+pricing.early-booking.tier1.multiplier=0.80
+
+# Example: Disable weekend pricing
+pricing.strategy.weekend-enabled=false
+```
+
+See `PricingConfig.java` for all available configuration options.
 
 ### Installation
 
@@ -176,7 +195,24 @@ GET    /api/rentals/me?currency=GBP     # Rental prices in GBP
 
 **Supported Currencies:** TRY, USD, EUR, GBP, JPY
 
-### Example Request
+### Dynamic Pricing
+
+```http
+POST   /api/pricing/calculate           # Calculate price for rental period
+GET    /api/pricing/preview             # Preview price without booking
+GET    /api/pricing/strategies          # List enabled pricing strategies
+```
+
+**Pricing Strategies:**
+1. **Season Pricing** - Peak season (Jun-Aug): +25%, Off-peak (Nov-Feb): -10%
+2. **Early Booking** - Book 30+ days ahead: -15%, 14-29 days: -10%, 7-13 days: -5%
+3. **Duration Discount** - 7-13 days: -10%, 14-29 days: -15%, 30+ days: -20%
+4. **Weekend Pricing** - Friday-Sunday: +15%
+5. **Demand Pricing** - High demand (>80% occupancy): +20%, Moderate (50-80%): +10%
+
+**Configuration:** All multipliers and thresholds are configurable via `application.properties`
+
+### Example Requests
 
 ```bash
 # Register a new user
@@ -199,6 +235,16 @@ curl -X POST http://localhost:8082/api/auth/login \
 # List cars (with token)
 curl -X GET http://localhost:8082/api/cars \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Calculate rental price
+curl -X POST http://localhost:8082/api/pricing/calculate \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "carId": 1,
+    "startDate": "2024-07-15",
+    "endDate": "2024-07-22"
+  }'
 ```
 
 ## 🧪 Testing
@@ -308,6 +354,7 @@ Through this project, I gained practical experience with:
 
 - **Spring Boot Architecture** - Understanding auto-configuration, starters, and conventions
 - **Spring Security** - Implementing JWT authentication from scratch
+- **Design Patterns** - Strategy pattern for dynamic pricing, dependency injection
 - **JPA/Hibernate** - Entity relationships, query optimization, N+1 problem
 - **RESTful Design** - Proper HTTP methods, status codes, and API versioning
 - **Database Migrations** - Managing schema changes with Flyway
@@ -321,6 +368,7 @@ Through this project, I gained practical experience with:
 **✅ Completed Features:**
 - Core rental functionality
 - JWT authentication
+- Dynamic pricing engine with 5 strategies
 - Real-time currency conversion (TRY, USD, EUR, GBP, JPY)
 - Integration tests
 - API documentation
