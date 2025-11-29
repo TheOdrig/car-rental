@@ -16,6 +16,9 @@ import com.akif.repository.UserRepository;
 import com.akif.service.gateway.IPaymentGateway;
 import com.akif.service.IRentalService;
 import com.akif.service.gateway.PaymentResult;
+import com.akif.service.pricing.IDynamicPricingService;
+import com.akif.service.pricing.PriceModifier;
+import com.akif.service.pricing.PricingResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -43,6 +46,7 @@ public class RentalServiceImpl implements IRentalService {
     private final PaymentRepository paymentRepository;
     private final IPaymentGateway paymentGateway;
     private final RentalMapper rentalMapper;
+    private final IDynamicPricingService dynamicPricingService;
 
     @Override
     @Transactional
@@ -58,11 +62,20 @@ public class RentalServiceImpl implements IRentalService {
 
         checkDateOverlap(car.getId(), request.getStartDate(), request.getEndDate());
 
-        int days = calculateDays(request.getStartDate(), request.getEndDate());
+        PricingResult pricingResult = dynamicPricingService.calculatePrice(
+            request.getCarId(),
+            request.getStartDate(),
+            request.getEndDate(),
+            LocalDate.now()
+        );
 
-        BigDecimal dailyPrice = car.getPrice();
-        BigDecimal totalPrice = dailyPrice.multiply(BigDecimal.valueOf(days));
+        int days = pricingResult.rentalDays();
+        BigDecimal dailyPrice = pricingResult.effectiveDailyPrice();
+        BigDecimal totalPrice = pricingResult.finalPrice();
         CurrencyType currency = car.getCurrencyType();
+
+        log.info("Dynamic pricing applied: base={}, final={}, modifiers={}",
+            pricingResult.baseTotalPrice(), pricingResult.finalPrice(), pricingResult.appliedModifiers().size());
 
         Rental rental = Rental.builder()
                 .user(user)
@@ -78,6 +91,15 @@ public class RentalServiceImpl implements IRentalService {
 
         Rental savedRental = rentalRepository.save(rental);
         RentalResponseDto result = rentalMapper.toDto(savedRental);
+
+        result.setOriginalPrice(pricingResult.baseTotalPrice());
+        result.setFinalPrice(pricingResult.finalPrice());
+        result.setTotalSavings(pricingResult.totalSavings());
+        result.setAppliedDiscounts(
+            pricingResult.appliedModifiers().stream()
+                .map(PriceModifier::description)
+                .toList()
+        );
 
         logRentalOperationSuccess("created", result);
         return result;

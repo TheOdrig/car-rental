@@ -38,6 +38,11 @@ public class RentalResponseDto implements Serializable {
     private CurrencyType currency;
     private RentalStatus status;
 
+    private BigDecimal originalPrice;
+    private BigDecimal finalPrice;
+    private BigDecimal totalSavings;
+    private java.util.List<String> appliedDiscounts;
+
     private BigDecimal convertedTotalPrice;
     private CurrencyType displayCurrency;
     private BigDecimal exchangeRate;
