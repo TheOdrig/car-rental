@@ -36,12 +36,15 @@ public class StripePaymentGateway implements IPaymentGateway {
     private static final long INITIAL_BACKOFF_MS = 1000;
 
     public CheckoutSessionResult createCheckoutSession(Payment payment, String customerEmail) {
-        log.info("Creating Stripe Checkout Session for payment ID: {}, amount: {} {}",
-                payment.getId(), payment.getAmount(), payment.getCurrency());
+        LocalDateTime operationTimestamp = LocalDateTime.now();
+        Long rentalId = payment.getRental().getId();
+        
+        log.info("[AUDIT] Payment Operation: CREATE_CHECKOUT_SESSION | Rental ID: {} | Payment ID: {} | Amount: {} {} | Customer Email: {} | Timestamp: {}",
+                rentalId, payment.getId(), payment.getAmount(), payment.getCurrency(), customerEmail, operationTimestamp);
 
         String idempotencyKey = idempotencyKeyGenerator.generateForCheckout(
-                payment.getRental().getId(),
-                LocalDateTime.now()
+                rentalId,
+                operationTimestamp
         );
 
         return executeWithRetry(() -> {
@@ -81,8 +84,8 @@ public class StripePaymentGateway implements IPaymentGateway {
 
             Session session = Session.create(params);
 
-            log.info("✅ Stripe Checkout Session created. SessionId: {}, URL: {}",
-                    session.getId(), session.getUrl());
+            log.info("[AUDIT] Payment Operation: CREATE_CHECKOUT_SESSION | Status: SUCCESS | Rental ID: {} | Payment ID: {} | Session ID: {} | Idempotency Key: {} | Timestamp: {}",
+                    rentalId, payment.getId(), session.getId(), idempotencyKey, LocalDateTime.now());
 
             return new CheckoutSessionResult(session.getId(), session.getUrl(), idempotencyKey);
 
@@ -91,28 +94,42 @@ public class StripePaymentGateway implements IPaymentGateway {
 
     @Override
     public PaymentResult authorize(BigDecimal amount, CurrencyType currency, String customerId) {
-        log.info("🔒 Authorizing payment via Stripe: {} {}, customerId: {}", amount, currency, customerId);
+        LocalDateTime operationTimestamp = LocalDateTime.now();
+        
+        log.info("[AUDIT] Payment Operation: AUTHORIZE | Amount: {} {} | Customer ID: {} | Timestamp: {}",
+                amount, currency, customerId, operationTimestamp);
 
         log.warn("Direct authorize() called - Stripe Checkout handles authorization automatically");
 
-        return PaymentResult.success(
-                "STRIPE-AUTH-" + System.currentTimeMillis(),
-                "Authorization handled by Stripe Checkout"
-        );
+        String transactionId = "STRIPE-AUTH-" + System.currentTimeMillis();
+        
+        log.info("[AUDIT] Payment Operation: AUTHORIZE | Status: SUCCESS | Transaction ID: {} | Timestamp: {}",
+                transactionId, LocalDateTime.now());
+
+        return PaymentResult.success(transactionId, "Authorization handled by Stripe Checkout");
     }
 
     @Override
     public PaymentResult capture(String transactionId, BigDecimal amount) {
-        log.info("💰 Capturing payment via Stripe: transactionId={}, amount={}", transactionId, amount);
+        LocalDateTime operationTimestamp = LocalDateTime.now();
+        
+        log.info("[AUDIT] Payment Operation: CAPTURE | Transaction ID: {} | Amount: {} | Timestamp: {}",
+                transactionId, amount, operationTimestamp);
 
         log.warn("Direct capture() called - Stripe Checkout auto-captures payments");
+
+        log.info("[AUDIT] Payment Operation: CAPTURE | Status: SUCCESS | Transaction ID: {} | Timestamp: {}",
+                transactionId, LocalDateTime.now());
 
         return PaymentResult.success(transactionId, "Payment captured automatically by Stripe Checkout");
     }
 
     @Override
     public PaymentResult refund(String transactionId, BigDecimal amount) {
-        log.info("↩️ Processing full refund via Stripe: transactionId={}, amount={}", transactionId, amount);
+        LocalDateTime operationTimestamp = LocalDateTime.now();
+        
+        log.info("[AUDIT] Payment Operation: REFUND | Transaction ID: {} | Amount: {} | Timestamp: {}",
+                transactionId, amount, operationTimestamp);
 
         return executeWithRetry(() -> {
             try {
@@ -125,20 +142,24 @@ public class StripePaymentGateway implements IPaymentGateway {
 
                 Refund refund = Refund.create(params);
 
-                log.info("✅ Stripe refund processed. RefundId: {}, Status: {}",
-                        refund.getId(), refund.getStatus());
+                log.info("[AUDIT] Payment Operation: REFUND | Status: SUCCESS | Transaction ID: {} | Refund ID: {} | Amount: {} | Stripe Status: {} | Timestamp: {}",
+                        transactionId, refund.getId(), amount, refund.getStatus(), LocalDateTime.now());
 
                 return PaymentResult.success(refund.getId(), "Refund processed successfully");
 
             } catch (StripeException e) {
-                log.error("❌ Stripe refund failed: {}", e.getMessage(), e);
+                log.error("[AUDIT] Payment Operation: REFUND | Status: FAILED | Transaction ID: {} | Amount: {} | Stripe Error Code: {} | Error Message: {} | Timestamp: {}",
+                        transactionId, amount, e.getCode(), e.getMessage(), LocalDateTime.now());
                 throw new PaymentFailedException(transactionId, e.getMessage());
             }
         }, "refund");
     }
 
     public PaymentResult partialRefund(String transactionId, BigDecimal amount) {
-        log.info("↩️ Processing partial refund via Stripe: transactionId={}, amount={}", transactionId, amount);
+        LocalDateTime operationTimestamp = LocalDateTime.now();
+        
+        log.info("[AUDIT] Payment Operation: PARTIAL_REFUND | Transaction ID: {} | Amount: {} | Timestamp: {}",
+                transactionId, amount, operationTimestamp);
 
         return executeWithRetry(() -> {
             try {
@@ -151,13 +172,14 @@ public class StripePaymentGateway implements IPaymentGateway {
 
                 Refund refund = Refund.create(params);
 
-                log.info("✅ Stripe partial refund processed. RefundId: {}, Amount: {}, Status: {}",
-                        refund.getId(), amount, refund.getStatus());
+                log.info("[AUDIT] Payment Operation: PARTIAL_REFUND | Status: SUCCESS | Transaction ID: {} | Refund ID: {} | Amount: {} | Stripe Status: {} | Timestamp: {}",
+                        transactionId, refund.getId(), amount, refund.getStatus(), LocalDateTime.now());
 
                 return PaymentResult.success(refund.getId(), "Partial refund processed successfully");
 
             } catch (StripeException e) {
-                log.error("❌ Stripe partial refund failed: {}", e.getMessage(), e);
+                log.error("[AUDIT] Payment Operation: PARTIAL_REFUND | Status: FAILED | Transaction ID: {} | Amount: {} | Stripe Error Code: {} | Error Message: {} | Timestamp: {}",
+                        transactionId, amount, e.getCode(), e.getMessage(), LocalDateTime.now());
                 throw new PaymentFailedException(transactionId, e.getMessage());
             }
         }, "partialRefund");
@@ -174,8 +196,8 @@ public class StripePaymentGateway implements IPaymentGateway {
                 attempt++;
 
                 if (attempt >= MAX_RETRY_ATTEMPTS) {
-                    log.error("❌ Stripe operation '{}' failed after {} attempts: {}",
-                            operationName, MAX_RETRY_ATTEMPTS, e.getMessage());
+                    log.error("[AUDIT] Payment Operation: {} | Status: FAILED_AFTER_RETRIES | Attempts: {} | Stripe Error Code: {} | Error Message: {} | Timestamp: {}",
+                            operationName.toUpperCase(), MAX_RETRY_ATTEMPTS, e.getCode(), e.getMessage(), LocalDateTime.now());
                     throw new PaymentFailedException(
                             String.format("Stripe operation '%s' failed after %d attempts: %s",
                                     operationName, MAX_RETRY_ATTEMPTS, e.getMessage())
@@ -183,8 +205,8 @@ public class StripePaymentGateway implements IPaymentGateway {
                 }
 
                 if (isRetryableError(e)) {
-                    log.warn("⚠️ Stripe operation '{}' failed (attempt {}/{}), retrying in {}ms: {}",
-                            operationName, attempt, MAX_RETRY_ATTEMPTS, backoffMs, e.getMessage());
+                    log.warn("[AUDIT] Payment Operation: {} | Status: RETRY | Attempt: {}/{} | Retry Delay: {}ms | Stripe Error Code: {} | Error Message: {} | Timestamp: {}",
+                            operationName.toUpperCase(), attempt, MAX_RETRY_ATTEMPTS, backoffMs, e.getCode(), e.getMessage(), LocalDateTime.now());
 
                     try {
                         Thread.sleep(backoffMs);
@@ -195,8 +217,8 @@ public class StripePaymentGateway implements IPaymentGateway {
 
                     backoffMs *= 2;
                 } else {
-                    log.error("❌ Stripe operation '{}' failed with non-retryable error: {}",
-                            operationName, e.getMessage());
+                    log.error("[AUDIT] Payment Operation: {} | Status: FAILED_NON_RETRYABLE | Stripe Error Code: {} | Error Message: {} | Timestamp: {}",
+                            operationName.toUpperCase(), e.getCode(), e.getMessage(), LocalDateTime.now());
                     throw new PaymentFailedException(operationName + " failed: " + e.getMessage());
                 }
             }
