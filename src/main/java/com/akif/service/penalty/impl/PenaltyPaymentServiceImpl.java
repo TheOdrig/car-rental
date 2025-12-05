@@ -61,32 +61,52 @@ public class PenaltyPaymentServiceImpl implements IPenaltyPaymentService {
 
         try {
             String customerId = penaltyPayment.getRental().getUser().getId().toString();
-            PaymentResult result = paymentGateway.authorize(
+
+            PaymentResult authorizeResult = paymentGateway.authorize(
                     penaltyPayment.getAmount(),
                     penaltyPayment.getCurrency(),
                     customerId
             );
 
-            if (result.success()) {
-                penaltyPayment.updateStatus(PaymentStatus.AUTHORIZED);
-                penaltyPayment.setTransactionId(result.transactionId());
-                penaltyPayment.setGatewayResponse(result.message());
+            if (!authorizeResult.success()) {
+                log.warn("Failed to authorize penalty payment: ID={}, Reason: {}", 
+                        penaltyPayment.getId(), authorizeResult.message());
+                
+                penaltyPayment.updateStatus(PaymentStatus.FAILED);
+                penaltyPayment.setFailureReason(authorizeResult.message());
+                penaltyPayment.setGatewayResponse(authorizeResult.message());
+                paymentRepository.save(penaltyPayment);
+                
+                return authorizeResult;
+            }
+
+            PaymentResult captureResult = paymentGateway.capture(
+                    authorizeResult.transactionId(),
+                    penaltyPayment.getAmount()
+            );
+
+            if (captureResult.success()) {
+                penaltyPayment.updateStatus(PaymentStatus.CAPTURED);
+                penaltyPayment.setTransactionId(captureResult.transactionId());
+                penaltyPayment.setGatewayResponse(captureResult.message());
                 paymentRepository.save(penaltyPayment);
 
                 log.info("Successfully charged penalty payment: ID={}, Transaction ID={}", 
-                        penaltyPayment.getId(), result.transactionId());
+                        penaltyPayment.getId(), captureResult.transactionId());
+                
+                return captureResult;
 
             } else {
-                log.warn("Failed to charge penalty payment: ID={}, Reason: {}", 
-                        penaltyPayment.getId(), result.message());
+                log.warn("Failed to capture penalty payment: ID={}, Reason: {}", 
+                        penaltyPayment.getId(), captureResult.message());
                 
                 penaltyPayment.updateStatus(PaymentStatus.FAILED);
-                penaltyPayment.setFailureReason(result.message());
-                penaltyPayment.setGatewayResponse(result.message());
+                penaltyPayment.setFailureReason(captureResult.message());
+                penaltyPayment.setGatewayResponse(captureResult.message());
                 paymentRepository.save(penaltyPayment);
 
             }
-            return result;
+            return captureResult;
         } catch (Exception e) {
             log.error("Exception while charging penalty payment: ID={}, Error: {}", 
                      penaltyPayment.getId(), e.getMessage(), e);

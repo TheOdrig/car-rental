@@ -149,7 +149,7 @@ public class PenaltyWaiverControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "admin@example.com", roles = "ADMIN")
+    @WithMockUser(username = "admin", roles = "ADMIN")
     @DisplayName("POST /api/admin/rentals/{id}/penalty/waive - Should waive full penalty")
     void shouldWaiveFullPenalty() throws Exception {
         PenaltyWaiverRequestDto request = PenaltyWaiverRequestDto.builder()
@@ -173,7 +173,7 @@ public class PenaltyWaiverControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "admin@example.com", roles = "ADMIN")
+    @WithMockUser(username = "admin", roles = "ADMIN")
     @DisplayName("POST /api/admin/rentals/{id}/penalty/waive - Should waive partial penalty")
     void shouldWaivePartialPenalty() throws Exception {
         PenaltyWaiverRequestDto request = PenaltyWaiverRequestDto.builder()
@@ -197,7 +197,7 @@ public class PenaltyWaiverControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "admin@example.com", roles = "ADMIN")
+    @WithMockUser(username = "admin", roles = "ADMIN")
     @DisplayName("POST /api/admin/rentals/{id}/penalty/waive - Should reject invalid waiver amount")
     void shouldRejectInvalidWaiverAmount() throws Exception {
         PenaltyWaiverRequestDto request = PenaltyWaiverRequestDto.builder()
@@ -214,7 +214,7 @@ public class PenaltyWaiverControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "admin@example.com", roles = "ADMIN")
+    @WithMockUser(username = "admin", roles = "ADMIN")
     @DisplayName("POST /api/admin/rentals/{id}/penalty/waive - Should reject short reason")
     void shouldRejectShortReason() throws Exception {
         PenaltyWaiverRequestDto request = PenaltyWaiverRequestDto.builder()
@@ -230,7 +230,7 @@ public class PenaltyWaiverControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "admin@example.com", roles = "ADMIN")
+    @WithMockUser(username = "admin", roles = "ADMIN")
     @DisplayName("GET /api/admin/rentals/{id}/penalty/history - Should return penalty history")
     void shouldReturnPenaltyHistory() throws Exception {
         PenaltyWaiver waiver = PenaltyWaiver.builder()
@@ -259,7 +259,7 @@ public class PenaltyWaiverControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "admin@example.com", roles = "ADMIN")
+    @WithMockUser(username = "admin", roles = "ADMIN")
     @DisplayName("GET /api/admin/rentals/{id}/penalty/history - Should return empty list for no waivers")
     void shouldReturnEmptyListForNoWaivers() throws Exception {
         mockMvc.perform(get("/api/admin/rentals/{id}/penalty/history", lateRental.getId()))
@@ -270,7 +270,7 @@ public class PenaltyWaiverControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "admin@example.com", roles = "ADMIN")
+    @WithMockUser(username = "admin", roles = "ADMIN")
     @DisplayName("GET /api/admin/rentals/{id}/penalty/history - Should return multiple waivers")
     void shouldReturnMultipleWaivers() throws Exception {
         PenaltyWaiver waiver1 = PenaltyWaiver.builder()
@@ -351,7 +351,7 @@ public class PenaltyWaiverControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "admin@example.com", roles = "ADMIN")
+    @WithMockUser(username = "admin", roles = "ADMIN")
     @DisplayName("POST /api/admin/rentals/{id}/penalty/waive - Should return 404 for non-existent rental")
     void shouldReturn404ForNonExistentRental() throws Exception {
         PenaltyWaiverRequestDto request = PenaltyWaiverRequestDto.builder()

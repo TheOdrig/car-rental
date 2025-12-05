@@ -100,9 +100,12 @@ class PenaltyPaymentServiceImplTest {
         @Test
         @DisplayName("Should charge penalty successfully")
         void shouldChargePenaltySuccessfully() {
-            PaymentResult successResult = PaymentResult.success("txn_123", "Payment successful");
+            PaymentResult authorizeResult = PaymentResult.success("auth_123", "Authorized");
+            PaymentResult captureResult = PaymentResult.success("txn_123", "Payment successful");
             when(paymentGateway.authorize(any(BigDecimal.class), any(CurrencyType.class), anyString()))
-                    .thenReturn(successResult);
+                    .thenReturn(authorizeResult);
+            when(paymentGateway.capture(anyString(), any(BigDecimal.class)))
+                    .thenReturn(captureResult);
             when(paymentRepository.save(any(Payment.class))).thenReturn(testPayment);
 
             PaymentResult result = service.chargePenalty(testPayment);
@@ -114,20 +117,24 @@ class PenaltyPaymentServiceImplTest {
                     eq(testPayment.getCurrency()),
                     eq(testUser.getId().toString())
             );
+            verify(paymentGateway, times(1)).capture(eq("auth_123"), eq(testPayment.getAmount()));
             verify(paymentRepository, times(1)).save(testPayment);
         }
 
         @Test
-        @DisplayName("Should update payment status to AUTHORIZED on successful charge")
-        void shouldUpdatePaymentStatusToAuthorizedOnSuccessfulCharge() {
-            PaymentResult successResult = PaymentResult.success("txn_456", "Payment successful");
+        @DisplayName("Should update payment status to CAPTURED on successful charge")
+        void shouldUpdatePaymentStatusToCapturedOnSuccessfulCharge() {
+            PaymentResult authorizeResult = PaymentResult.success("auth_456", "Authorized");
+            PaymentResult captureResult = PaymentResult.success("txn_456", "Payment captured");
             when(paymentGateway.authorize(any(BigDecimal.class), any(CurrencyType.class), anyString()))
-                    .thenReturn(successResult);
+                    .thenReturn(authorizeResult);
+            when(paymentGateway.capture(anyString(), any(BigDecimal.class)))
+                    .thenReturn(captureResult);
             when(paymentRepository.save(any(Payment.class))).thenReturn(testPayment);
 
             service.chargePenalty(testPayment);
 
-            assertThat(testPayment.getStatus()).isEqualTo(PaymentStatus.AUTHORIZED);
+            assertThat(testPayment.getStatus()).isEqualTo(PaymentStatus.CAPTURED);
             assertThat(testPayment.getTransactionId()).isEqualTo("txn_456");
         }
     }
@@ -225,9 +232,12 @@ class PenaltyPaymentServiceImplTest {
             testRental.setCurrency(CurrencyType.EUR);
             testPayment.setCurrency(CurrencyType.EUR);
             
-            PaymentResult successResult = PaymentResult.success("txn_789", "Payment successful");
+            PaymentResult authorizeResult = PaymentResult.success("auth_789", "Authorized");
+            PaymentResult captureResult = PaymentResult.success("txn_789", "Payment captured");
             when(paymentGateway.authorize(any(BigDecimal.class), eq(CurrencyType.EUR), anyString()))
-                    .thenReturn(successResult);
+                    .thenReturn(authorizeResult);
+            when(paymentGateway.capture(anyString(), any(BigDecimal.class)))
+                    .thenReturn(captureResult);
             when(paymentRepository.save(any(Payment.class))).thenReturn(testPayment);
 
             service.chargePenalty(testPayment);
@@ -237,6 +247,7 @@ class PenaltyPaymentServiceImplTest {
                     eq(CurrencyType.EUR),
                     anyString()
             );
+            verify(paymentGateway, times(1)).capture(anyString(), any(BigDecimal.class));
         }
     }
 

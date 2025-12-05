@@ -54,7 +54,7 @@ public class PenaltyWaiverController {
         String username = authentication.getName();
         log.info("POST /api/admin/rentals/{}/penalty/waive - Admin: {}", id, username);
 
-        User admin = userRepository.findByEmail(username)
+        User admin = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Admin user not found"));
 
         PenaltyWaiver waiver;
