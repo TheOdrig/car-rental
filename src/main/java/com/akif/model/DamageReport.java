@@ -77,6 +77,9 @@ public class DamageReport extends BaseEntity {
     
     @Column(name = "insurance_deductible", precision = 12, scale = 2)
     private BigDecimal insuranceDeductible;
+
+    @Column(name = "assessment_notes", length = 1000)
+    private String assessmentNotes;
     
     @Column(name = "payment_id")
     private Long paymentId;
@@ -89,6 +92,12 @@ public class DamageReport extends BaseEntity {
     
     @Column(name = "dispute_comments", length = 1000)
     private String disputeComments;
+
+    @Column(name = "disputed_by")
+    private Long disputedBy;
+
+    @Column(name = "disputed_at")
+    private LocalDateTime disputedAt;
     
     @Column(name = "resolution_notes", length = 1000)
     private String resolutionNotes;

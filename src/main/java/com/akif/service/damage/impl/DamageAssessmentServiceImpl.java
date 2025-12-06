@@ -63,6 +63,7 @@ public class DamageAssessmentServiceImpl implements IDamageAssessmentService {
         damageReport.setCustomerLiability(customerLiability);
         damageReport.setInsuranceCoverage(hasInsurance);
         damageReport.setInsuranceDeductible(deductible);
+        damageReport.setAssessmentNotes(request.assessmentNotes());
         damageReport.setAssessedBy(1L); // TODO: Get from SecurityContext
         damageReport.setAssessedAt(LocalDateTime.now());
         damageReport.updateStatus(DamageStatus.ASSESSED);
@@ -147,7 +148,7 @@ public class DamageAssessmentServiceImpl implements IDamageAssessmentService {
                 damageReport.getCustomerLiability(),
                 damageReport.getInsuranceCoverage(),
                 damageReport.getInsuranceDeductible(),
-                null,
+                damageReport.getAssessmentNotes(),
                 damageReport.getAssessedAt(),
                 damageReport.getAssessedBy(),
                 carStatusUpdated

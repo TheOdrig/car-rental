@@ -25,12 +25,15 @@ CREATE TABLE IF NOT EXISTS gallery.damage_reports (
     customer_liability DECIMAL(12, 2),
     insurance_coverage BOOLEAN,
     insurance_deductible DECIMAL(12, 2),
+    assessment_notes VARCHAR(1000),
 
     payment_id BIGINT,
     payment_status VARCHAR(20),
 
     dispute_reason VARCHAR(500),
     dispute_comments VARCHAR(1000),
+    disputed_by BIGINT,
+    disputed_at TIMESTAMP(6),
 
     resolution_notes VARCHAR(1000),
     resolved_by BIGINT,
