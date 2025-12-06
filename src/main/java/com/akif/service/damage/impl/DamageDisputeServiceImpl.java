@@ -50,6 +50,13 @@ public class DamageDisputeServiceImpl implements IDamageDisputeService {
             throw DamageDisputeException.invalidStatus(damageReport.getStatus().name());
         }
 
+        Long rentalOwnerId = damageReport.getRental().getUser().getId();
+        if (!rentalOwnerId.equals(user.getId())) {
+            log.warn("User {} attempted to dispute damage {} but is not the rental owner (ownerId={})",
+                    user.getId(), damageId, rentalOwnerId);
+            throw DamageDisputeException.notOwner();
+        }
+
         damageReport.setDisputeReason(request.reason());
         damageReport.setDisputeComments(request.comments());
         damageReport.setDisputedBy(user.getId());
