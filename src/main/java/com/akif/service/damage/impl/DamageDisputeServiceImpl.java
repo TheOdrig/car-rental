@@ -12,6 +12,8 @@ import com.akif.model.DamageReport;
 import com.akif.model.Payment;
 import com.akif.repository.DamageReportRepository;
 import com.akif.repository.PaymentRepository;
+import com.akif.repository.UserRepository;
+import com.akif.model.User;
 import com.akif.service.damage.IDamageDisputeService;
 import com.akif.service.gateway.IPaymentGateway;
 import com.akif.service.gateway.PaymentResult;
@@ -31,14 +33,18 @@ public class DamageDisputeServiceImpl implements IDamageDisputeService {
 
     private final DamageReportRepository damageReportRepository;
     private final PaymentRepository paymentRepository;
+    private final UserRepository userRepository;
     private final IPaymentGateway paymentGateway;
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
-    public DamageDisputeResponseDto createDispute(Long damageId, DamageDisputeRequestDto request) {
+    public DamageDisputeResponseDto createDispute(Long damageId, DamageDisputeRequestDto request, String username) {
         DamageReport damageReport = damageReportRepository.findByIdAndIsDeletedFalse(damageId)
                 .orElseThrow(() -> DamageReportException.notFound(damageId));
+
+        User user = userRepository.findByUsernameAndIsDeletedFalse(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
 
         if (!damageReport.canBeDisputed()) {
             throw DamageDisputeException.invalidStatus(damageReport.getStatus().name());
@@ -46,7 +52,7 @@ public class DamageDisputeServiceImpl implements IDamageDisputeService {
 
         damageReport.setDisputeReason(request.reason());
         damageReport.setDisputeComments(request.comments());
-        damageReport.setDisputedBy(1L); // TODO: Get from SecurityContext
+        damageReport.setDisputedBy(user.getId());
         damageReport.setDisputedAt(LocalDateTime.now());
         damageReport.updateStatus(DamageStatus.DISPUTED);
         damageReport = damageReportRepository.save(damageReport);
@@ -59,9 +65,12 @@ public class DamageDisputeServiceImpl implements IDamageDisputeService {
 
     @Override
     @Transactional
-    public DamageDisputeResponseDto resolveDispute(Long damageId, DamageDisputeResolutionDto resolution) {
+    public DamageDisputeResponseDto resolveDispute(Long damageId, DamageDisputeResolutionDto resolution, String username) {
         DamageReport damageReport = damageReportRepository.findByIdAndIsDeletedFalse(damageId)
                 .orElseThrow(() -> DamageReportException.notFound(damageId));
+
+        User user = userRepository.findByUsernameAndIsDeletedFalse(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
 
         if (damageReport.getStatus() != DamageStatus.DISPUTED) {
             throw DamageDisputeException.cannotResolve(damageReport.getStatus().name());
@@ -79,7 +88,7 @@ public class DamageDisputeServiceImpl implements IDamageDisputeService {
         damageReport.setCustomerLiability(adjustedLiability);
         damageReport.setRepairCostEstimate(resolution.adjustedRepairCost());
         damageReport.setResolutionNotes(resolution.resolutionNotes());
-        damageReport.setResolvedBy(1L); // TODO: Get from SecurityContext
+        damageReport.setResolvedBy(user.getId());
         damageReport.setResolvedAt(LocalDateTime.now());
         damageReport.updateStatus(DamageStatus.RESOLVED);
         damageReport = damageReportRepository.save(damageReport);

@@ -12,6 +12,8 @@ import com.akif.model.Car;
 import com.akif.model.DamageReport;
 import com.akif.repository.CarRepository;
 import com.akif.repository.DamageReportRepository;
+import com.akif.repository.UserRepository;
+import com.akif.model.User;
 import com.akif.service.damage.IDamageAssessmentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,14 +31,18 @@ public class DamageAssessmentServiceImpl implements IDamageAssessmentService {
 
     private final DamageReportRepository damageReportRepository;
     private final CarRepository carRepository;
+    private final UserRepository userRepository;
     private final DamageConfig damageConfig;
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
-    public DamageAssessmentResponseDto assessDamage(Long damageId, DamageAssessmentRequestDto request) {
+    public DamageAssessmentResponseDto assessDamage(Long damageId, DamageAssessmentRequestDto request, String username) {
         DamageReport damageReport = damageReportRepository.findByIdAndIsDeletedFalse(damageId)
                 .orElseThrow(() -> DamageReportException.notFound(damageId));
+
+        User user = userRepository.findByUsernameAndIsDeletedFalse(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
 
         if (!damageReport.canBeAssessed()) {
             throw DamageAssessmentException.invalidStatus(damageReport.getStatus().name());
@@ -64,7 +70,7 @@ public class DamageAssessmentServiceImpl implements IDamageAssessmentService {
         damageReport.setInsuranceCoverage(hasInsurance);
         damageReport.setInsuranceDeductible(deductible);
         damageReport.setAssessmentNotes(request.assessmentNotes());
-        damageReport.setAssessedBy(1L); // TODO: Get from SecurityContext
+        damageReport.setAssessedBy(user.getId());
         damageReport.setAssessedAt(LocalDateTime.now());
         damageReport.updateStatus(DamageStatus.ASSESSED);
 
@@ -81,7 +87,7 @@ public class DamageAssessmentServiceImpl implements IDamageAssessmentService {
 
     @Override
     @Transactional
-    public DamageAssessmentResponseDto updateAssessment(Long damageId, DamageAssessmentRequestDto request) {
+    public DamageAssessmentResponseDto updateAssessment(Long damageId, DamageAssessmentRequestDto request, String username) {
         DamageReport damageReport = damageReportRepository.findByIdAndIsDeletedFalse(damageId)
                 .orElseThrow(() -> DamageReportException.notFound(damageId));
 
@@ -89,7 +95,7 @@ public class DamageAssessmentServiceImpl implements IDamageAssessmentService {
             throw DamageAssessmentException.alreadyCharged();
         }
 
-        return assessDamage(damageId, request);
+        return assessDamage(damageId, request, username);
     }
 
     @Override

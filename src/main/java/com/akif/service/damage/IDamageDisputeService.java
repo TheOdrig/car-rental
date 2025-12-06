@@ -9,9 +9,9 @@ import java.math.BigDecimal;
 
 public interface IDamageDisputeService {
 
-    DamageDisputeResponseDto createDispute(Long damageId, DamageDisputeRequestDto request);
+    DamageDisputeResponseDto createDispute(Long damageId, DamageDisputeRequestDto request, String username);
 
-    DamageDisputeResponseDto resolveDispute(Long damageId, DamageDisputeResolutionDto resolution);
+    DamageDisputeResponseDto resolveDispute(Long damageId, DamageDisputeResolutionDto resolution, String username);
 
     void processRefundForAdjustment(DamageReport damageReport, BigDecimal adjustedAmount);
 }

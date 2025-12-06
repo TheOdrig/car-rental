@@ -15,6 +15,8 @@ import com.akif.model.Rental;
 import com.akif.repository.DamagePhotoRepository;
 import com.akif.repository.DamageReportRepository;
 import com.akif.repository.RentalRepository;
+import com.akif.repository.UserRepository;
+import com.akif.model.User;
 import com.akif.service.damage.IDamageReportService;
 import com.akif.service.damage.IFileUploadService;
 import lombok.RequiredArgsConstructor;
@@ -36,15 +38,19 @@ public class DamageReportServiceImpl implements IDamageReportService {
     private final DamageReportRepository damageReportRepository;
     private final DamagePhotoRepository damagePhotoRepository;
     private final RentalRepository rentalRepository;
+    private final UserRepository userRepository;
     private final IFileUploadService fileUploadService;
     private final DamageConfig damageConfig;
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
-    public DamageReportResponseDto createDamageReport(Long rentalId, DamageReportRequestDto request) {
+    public DamageReportResponseDto createDamageReport(Long rentalId, DamageReportRequestDto request, String username) {
         Rental rental = rentalRepository.findByIdAndIsDeletedFalse(rentalId)
                 .orElseThrow(() -> new RentalNotFoundException("Rental not found with id: " + rentalId));
+
+        User user = userRepository.findByUsernameAndIsDeletedFalse(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
 
         DamageReport damageReport = DamageReport.builder()
                 .rental(rental)
@@ -54,7 +60,7 @@ public class DamageReportServiceImpl implements IDamageReportService {
                 .severity(request.initialSeverity())
                 .category(request.category())
                 .status(DamageStatus.REPORTED)
-                .reportedBy(1L) // TODO: Get from SecurityContext
+                .reportedBy(user.getId())
                 .reportedAt(LocalDateTime.now())
                 .build();
 
@@ -81,9 +87,12 @@ public class DamageReportServiceImpl implements IDamageReportService {
 
     @Override
     @Transactional
-    public List<DamagePhotoDto> uploadDamagePhotos(Long damageId, List<MultipartFile> photos) {
+    public List<DamagePhotoDto> uploadDamagePhotos(Long damageId, List<MultipartFile> photos, String username) {
         DamageReport damageReport = damageReportRepository.findByIdAndIsDeletedFalse(damageId)
                 .orElseThrow(() -> DamageReportException.notFound(damageId));
+
+        User user = userRepository.findByUsernameAndIsDeletedFalse(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
 
         int currentPhotoCount = damagePhotoRepository.countByDamageReportIdAndIsDeletedFalse(damageId);
         int maxPhotos = damageConfig.getMaxPhotosPerReport();
@@ -109,7 +118,7 @@ public class DamageReportServiceImpl implements IDamageReportService {
                     .filePath(filePath)
                     .fileSize(photo.getSize())
                     .contentType(photo.getContentType())
-                    .uploadedBy(1L) // TODO: Get from SecurityContext
+                    .uploadedBy(user.getId())
                     .uploadedAt(LocalDateTime.now())
                     .displayOrder(++displayOrder)
                     .build();

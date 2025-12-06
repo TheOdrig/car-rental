@@ -9,13 +9,14 @@ import java.util.List;
 
 public interface IDamageReportService {
 
-    DamageReportResponseDto createDamageReport(Long rentalId, DamageReportRequestDto request);
+    DamageReportResponseDto createDamageReport(Long rentalId, DamageReportRequestDto request, String username);
 
     DamageReportResponseDto getDamageReport(Long damageId);
 
-    List<DamagePhotoDto> uploadDamagePhotos(Long damageId, List<MultipartFile> photos);
+    List<DamagePhotoDto> uploadDamagePhotos(Long damageId, List<MultipartFile> photos, String username);
 
     void deleteDamagePhoto(Long damageId, Long photoId);
 
     String getPhotoUrl(Long photoId);
 }
+
