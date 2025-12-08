@@ -5,6 +5,7 @@ import com.akif.dto.response.ErrorResponseDto;
 import com.akif.exception.BaseException;
 import com.akif.exception.OAuth2AuthenticationException;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -24,6 +25,7 @@ import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -200,6 +202,7 @@ public class GlobalExceptionHandler {
     }
 
     public String generateTraceId() {
-        return java.util.UUID.randomUUID().toString();
+        String correlationId = MDC.get("correlationId");
+        return correlationId != null ? correlationId : UUID.randomUUID().toString();
     }
 }
