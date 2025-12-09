@@ -2,6 +2,7 @@ package com.akif.model;
 
 import com.akif.enums.CarStatusType;
 import com.akif.enums.CurrencyType;
+import com.akif.shared.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -28,7 +29,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class Car extends BaseEntity{
+public class Car extends BaseEntity {
 
     @Column(name = "license_plate", nullable = false, length = 11,  unique = true)
     private String licensePlate;

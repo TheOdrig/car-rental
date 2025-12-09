@@ -1,4 +1,4 @@
-package com.akif.model;
+package com.akif.shared.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder.Default;

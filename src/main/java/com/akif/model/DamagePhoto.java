@@ -1,5 +1,6 @@
 package com.akif.model;
 
+import com.akif.shared.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
