@@ -1,4 +1,4 @@
-package com.akif.config;
+package com.akif.shared.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.cache.CacheManager;

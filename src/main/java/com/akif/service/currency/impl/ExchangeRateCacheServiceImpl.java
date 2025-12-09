@@ -1,6 +1,6 @@
 package com.akif.service.currency.impl;
 
-import com.akif.config.CacheConfig;
+import com.akif.shared.config.CacheConfig;
 import com.akif.config.FallbackRatesConfig;
 import com.akif.dto.currency.ExchangeRateResponse;
 import com.akif.shared.enums.CurrencyType;

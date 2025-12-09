@@ -1,4 +1,4 @@
-package com.akif.config;
+package com.akif.shared.config;
 
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
