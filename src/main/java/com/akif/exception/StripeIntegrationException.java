@@ -1,5 +1,6 @@
 package com.akif.exception;
 
+import com.akif.shared.exception.BaseException;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

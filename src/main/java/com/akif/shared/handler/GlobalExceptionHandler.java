@@ -1,8 +1,8 @@
-package com.akif.handler;
+package com.akif.shared.handler;
 
 import com.akif.dto.oauth2.OAuth2ErrorResponse;
 import com.akif.dto.response.ErrorResponseDto;
-import com.akif.exception.BaseException;
+import com.akif.shared.exception.BaseException;
 import com.akif.exception.OAuth2AuthenticationException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;

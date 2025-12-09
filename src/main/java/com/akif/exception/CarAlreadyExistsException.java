@@ -1,8 +1,9 @@
 package com.akif.exception;
 
+import com.akif.shared.exception.BaseException;
 import org.springframework.http.HttpStatus;
 
-public class CarAlreadyExistsException extends BaseException{
+public class CarAlreadyExistsException extends BaseException {
 
     public static final String ERROR_CODE = "CAR_ALREADY_EXISTS";
 

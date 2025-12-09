@@ -1,4 +1,4 @@
-package com.akif.exception;
+package com.akif.shared.exception;
 
 import org.springframework.http.HttpStatus;
 

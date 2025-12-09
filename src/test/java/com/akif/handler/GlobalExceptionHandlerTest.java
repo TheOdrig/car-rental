@@ -4,6 +4,7 @@ import com.akif.dto.oauth2.OAuth2ErrorResponse;
 import com.akif.dto.response.ErrorResponseDto;
 import com.akif.shared.enums.OAuth2ErrorType;
 import com.akif.exception.*;
+import com.akif.shared.handler.GlobalExceptionHandler;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

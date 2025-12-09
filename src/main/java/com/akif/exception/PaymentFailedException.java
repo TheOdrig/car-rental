@@ -1,5 +1,6 @@
 package com.akif.exception;
 
+import com.akif.shared.exception.BaseException;
 import org.springframework.http.HttpStatus;
 
 public class PaymentFailedException extends BaseException {
