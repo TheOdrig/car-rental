@@ -4,7 +4,7 @@ import com.akif.shared.config.CacheConfig;
 import com.akif.currency.internal.config.FallbackRatesConfig;
 import com.akif.currency.internal.dto.ExchangeRateResponse;
 import com.akif.shared.enums.CurrencyType;
-import com.akif.shared.enums.RateSource;
+import com.akif.currency.domain.enums.RateSource;
 import com.akif.exception.ExchangeRateApiException;
 import com.akif.currency.internal.IExchangeRateCacheService;
 import com.akif.currency.internal.IExchangeRateClient;

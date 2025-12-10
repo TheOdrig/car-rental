@@ -4,7 +4,7 @@ import com.akif.currency.internal.config.ExchangeRateClientConfig;
 import com.akif.currency.internal.dto.ExchangeRateApiResponse;
 import com.akif.currency.internal.dto.ExchangeRateResponse;
 import com.akif.shared.enums.CurrencyType;
-import com.akif.shared.enums.RateSource;
+import com.akif.currency.domain.enums.RateSource;
 import com.akif.exception.ExchangeRateApiException;
 import com.akif.currency.internal.IExchangeRateClient;
 import lombok.extern.slf4j.Slf4j;

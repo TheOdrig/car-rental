@@ -1,12 +1,12 @@
 package com.akif.auth.internal;
 
 import com.akif.config.OAuth2Properties;
-import com.akif.auth.internal.oauth2.dto.response.LinkAccountResponse;
-import com.akif.auth.internal.oauth2.dto.response.OAuth2TokenResponse;
-import com.akif.auth.internal.oauth2.dto.request.OAuth2UserInfo;
+import com.akif.auth.LinkAccountResponse;
+import com.akif.auth.internal.oauth2.dto.OAuth2TokenResponse;
+import com.akif.auth.internal.oauth2.dto.OAuth2UserInfo;
 import com.akif.auth.AuthResponse;
-import com.akif.shared.enums.AuthProvider;
-import com.akif.shared.enums.OAuth2Provider;
+import com.akif.auth.domain.enums.AuthProvider;
+import com.akif.auth.domain.enums.OAuth2Provider;
 import com.akif.shared.enums.Role;
 import com.akif.exception.AccountAlreadyLinkedException;
 import com.akif.exception.OAuth2AuthenticationException;

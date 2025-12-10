@@ -1,5 +1,6 @@
 package com.akif.mapper;
 
+import com.akif.car.internal.CarMapper;
 import com.akif.dto.request.RentalRequestDto;
 import com.akif.dto.response.RentalResponseDto;
 import com.akif.model.Rental;

@@ -1,7 +1,7 @@
 package com.akif.currency;
 
 import com.akif.shared.enums.CurrencyType;
-import com.akif.shared.enums.RateSource;
+import com.akif.currency.domain.enums.RateSource;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

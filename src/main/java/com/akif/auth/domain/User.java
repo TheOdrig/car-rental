@@ -1,6 +1,6 @@
 package com.akif.auth.domain;
 
-import com.akif.shared.enums.AuthProvider;
+import com.akif.auth.domain.enums.AuthProvider;
 import com.akif.shared.enums.Role;
 import com.akif.shared.domain.BaseEntity;
 import jakarta.persistence.*;

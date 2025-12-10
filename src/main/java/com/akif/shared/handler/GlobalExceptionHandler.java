@@ -1,6 +1,6 @@
 package com.akif.shared.handler;
 
-import com.akif.auth.internal.oauth2.dto.response.OAuth2ErrorResponse;
+import com.akif.auth.OAuth2ErrorResponse;
 import com.akif.dto.response.ErrorResponseDto;
 import com.akif.shared.exception.BaseException;
 import com.akif.exception.OAuth2AuthenticationException;

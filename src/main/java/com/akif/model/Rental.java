@@ -1,6 +1,7 @@
 package com.akif.model;
 
 import com.akif.auth.domain.User;
+import com.akif.car.domain.Car;
 import com.akif.shared.enums.CurrencyType;
 import com.akif.shared.enums.LateReturnStatus;
 import com.akif.shared.enums.RentalStatus;

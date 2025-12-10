@@ -1,7 +1,7 @@
 package com.akif.auth.internal.oauth2;
 
 import com.akif.auth.AuthResponse;
-import com.akif.auth.internal.oauth2.dto.response.LinkAccountResponse;
+import com.akif.auth.LinkAccountResponse;
 
 public interface IOAuth2AuthService {
 

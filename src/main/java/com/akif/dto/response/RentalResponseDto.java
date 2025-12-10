@@ -1,5 +1,6 @@
 package com.akif.dto.response;
 
+import com.akif.car.CarSummaryResponse;
 import com.akif.shared.enums.CurrencyType;
 import com.akif.shared.enums.RentalStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -23,7 +24,7 @@ public class RentalResponseDto implements Serializable {
 
     private Long id;
 
-    private CarSummaryResponseDto carSummary;
+    private CarSummaryResponse carSummary;
     private UserSummaryResponseDto userSummary;
 
     @JsonFormat(pattern = "dd-MM-yyyy")

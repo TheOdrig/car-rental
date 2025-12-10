@@ -1,6 +1,6 @@
 package com.akif.auth.web;
 
-import com.akif.auth.internal.oauth2.dto.response.LinkAccountResponse;
+import com.akif.auth.LinkAccountResponse;
 import com.akif.auth.AuthResponse;
 import com.akif.auth.domain.User;
 import com.akif.auth.repository.UserRepository;

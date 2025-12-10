@@ -4,7 +4,7 @@ import com.akif.auth.LoginRequest;
 import com.akif.auth.RefreshTokenRequest;
 import com.akif.auth.RegisterRequest;
 import com.akif.auth.AuthResponse;
-import com.akif.auth.IAuthService;
+import com.akif.auth.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authentication", description = "Authentication management APIs")
 public class AuthController {
 
-    private final IAuthService authService;
+    private final AuthService authService;
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user", description = "Create a new user account")

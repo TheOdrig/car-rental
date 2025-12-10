@@ -5,7 +5,7 @@ import com.akif.auth.RefreshTokenRequest;
 import com.akif.auth.RegisterRequest;
 import com.akif.auth.AuthResponse;
 import com.akif.auth.UserDto;
-import com.akif.shared.enums.AuthProvider;
+import com.akif.auth.domain.enums.AuthProvider;
 import com.akif.shared.enums.Role;
 import com.akif.exception.UserAlreadyExistsException;
 import com.akif.shared.exception.InvalidTokenException;
@@ -14,7 +14,7 @@ import com.akif.shared.exception.TokenExpiredException;
 import com.akif.auth.domain.User;
 import com.akif.auth.repository.UserRepository;
 import com.akif.shared.security.JwtTokenProvider;
-import com.akif.auth.IAuthService;
+import com.akif.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,7 +32,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
-public class AuthServiceImpl implements IAuthService {
+public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
