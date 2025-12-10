@@ -1,7 +1,7 @@
 package com.akif.notification.internal.email.impl;
 
 import com.akif.notification.internal.config.EmailProperties;
-import com.akif.dto.email.EmailMessage;
+import com.akif.notification.EmailMessage;
 import com.akif.exception.EmailSendException;
 import com.akif.notification.internal.email.IEmailSender;
 import jakarta.mail.MessagingException;

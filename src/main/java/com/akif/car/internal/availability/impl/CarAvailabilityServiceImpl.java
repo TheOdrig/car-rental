@@ -9,16 +9,16 @@ import com.akif.currency.ConversionResult;
 import com.akif.car.domain.enums.AvailabilityStatus;
 import com.akif.car.domain.enums.CarStatusType;
 import com.akif.shared.enums.CurrencyType;
-import com.akif.shared.enums.RentalStatus;
+import com.akif.rental.domain.enums.RentalStatus;
 import com.akif.exception.CarNotFoundException;
 import com.akif.exception.RentalValidationException;
 import com.akif.car.domain.Car;
-import com.akif.model.Rental;
+import com.akif.rental.domain.model.Rental;
 import com.akif.car.repository.CarRepository;
-import com.akif.repository.RentalRepository;
+import com.akif.rental.repository.RentalRepository;
 import com.akif.car.internal.availability.ICarAvailabilityService;
-import com.akif.currency.ICurrencyConversionService;
-import com.akif.car.internal.pricing.IDynamicPricingService;
+import com.akif.currency.CurrencyConversionService;
+import com.akif.car.internal.pricing.DynamicPricingService;
 import com.akif.car.internal.pricing.PriceModifier;
 import com.akif.car.internal.pricing.PricingResult;
 import lombok.RequiredArgsConstructor;
@@ -46,8 +46,8 @@ public class CarAvailabilityServiceImpl implements ICarAvailabilityService {
 
     private final CarRepository carRepository;
     private final RentalRepository rentalRepository;
-    private final IDynamicPricingService dynamicPricingService;
-    private final ICurrencyConversionService currencyConversionService;
+    private final DynamicPricingService dynamicPricingService;
+    private final CurrencyConversionService currencyConversionService;
 
     @Override
     public AvailabilitySearchResponse searchAvailableCars(AvailabilitySearchRequest request) {

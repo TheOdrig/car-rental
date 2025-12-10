@@ -6,8 +6,8 @@ import com.akif.currency.internal.dto.ExchangeRateResponse;
 import com.akif.shared.enums.CurrencyType;
 import com.akif.currency.domain.enums.RateSource;
 import com.akif.exception.ExchangeRateApiException;
-import com.akif.currency.internal.IExchangeRateCacheService;
-import com.akif.currency.internal.IExchangeRateClient;
+import com.akif.currency.internal.ExchangeRateCacheService;
+import com.akif.currency.internal.ExchangeRateClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -23,11 +23,11 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ExchangeRateCacheServiceImpl implements IExchangeRateCacheService {
+public class ExchangeRateCacheServiceImpl implements ExchangeRateCacheService {
 
     private static final CurrencyType BASE_CURRENCY = CurrencyType.USD;
 
-    private final IExchangeRateClient exchangeRateClient;
+    private final ExchangeRateClient exchangeRateClient;
     private final FallbackRatesConfig fallbackRatesConfig;
 
     @Override

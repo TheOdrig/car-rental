@@ -2,6 +2,7 @@ package com.akif.notification.internal.email.impl;
 
 import com.akif.event.*;
 import com.akif.notification.internal.email.IEmailTemplateService;
+import com.akif.rental.domain.event.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

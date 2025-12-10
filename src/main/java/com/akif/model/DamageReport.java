@@ -1,6 +1,7 @@
 package com.akif.model;
 
 import com.akif.car.domain.Car;
+import com.akif.rental.domain.model.Rental;
 import com.akif.shared.enums.DamageCategory;
 import com.akif.shared.enums.DamageSeverity;
 import com.akif.shared.enums.DamageStatus;

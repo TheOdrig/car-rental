@@ -1,12 +1,12 @@
 package com.akif.service.webhook;
 
 import com.akif.config.StripeConfig;
-import com.akif.shared.enums.PaymentStatus;
+import com.akif.rental.domain.enums.PaymentStatus;
 import com.akif.shared.enums.WebhookEventStatus;
 import com.akif.exception.WebhookSignatureException;
-import com.akif.model.Payment;
+import com.akif.rental.domain.model.Payment;
 import com.akif.model.WebhookEvent;
-import com.akif.repository.PaymentRepository;
+import com.akif.rental.repository.PaymentRepository;
 import com.akif.repository.WebhookEventRepository;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;

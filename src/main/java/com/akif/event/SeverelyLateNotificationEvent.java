@@ -1,5 +1,6 @@
 package com.akif.event;
 
+import com.akif.rental.domain.event.RentalEvent;
 import com.akif.shared.enums.CurrencyType;
 import lombok.Getter;
 

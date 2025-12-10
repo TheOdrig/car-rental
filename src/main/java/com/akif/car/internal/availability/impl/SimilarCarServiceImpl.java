@@ -7,7 +7,7 @@ import com.akif.car.domain.Car;
 import com.akif.car.repository.CarRepository;
 import com.akif.car.internal.availability.ICarAvailabilityService;
 import com.akif.car.internal.availability.ISimilarCarService;
-import com.akif.car.internal.pricing.IDynamicPricingService;
+import com.akif.car.internal.pricing.DynamicPricingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,7 +30,7 @@ public class SimilarCarServiceImpl implements ISimilarCarService {
 
     private final CarRepository carRepository;
     private final ICarAvailabilityService carAvailabilityService;
-    private final IDynamicPricingService dynamicPricingService;
+    private final DynamicPricingService dynamicPricingService;
 
     @Override
     public List<SimilarCarDto> findSimilarAvailableCars(Long carId, LocalDate startDate, LocalDate endDate, int limit) {

@@ -2,6 +2,7 @@ package com.akif.car.internal;
 
 import com.akif.car.*;
 import com.akif.car.internal.dto.CarRequest;
+import com.akif.car.internal.mapper.CarMapper;
 import com.akif.car.internal.pricing.dto.CarPriceUpdateRequest;
 import com.akif.car.internal.dto.CarSearchRequest;
 import com.akif.car.internal.dto.CarStatusUpdateRequest;

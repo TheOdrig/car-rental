@@ -1,13 +1,13 @@
 package com.akif.service.damage.impl;
 
 import com.akif.shared.enums.DamageStatus;
-import com.akif.shared.enums.PaymentStatus;
+import com.akif.rental.domain.enums.PaymentStatus;
 import com.akif.event.DamageChargedEvent;
 import com.akif.exception.DamageAssessmentException;
 import com.akif.model.DamageReport;
-import com.akif.model.Payment;
+import com.akif.rental.domain.model.Payment;
 import com.akif.repository.DamageReportRepository;
-import com.akif.repository.PaymentRepository;
+import com.akif.rental.repository.PaymentRepository;
 import com.akif.service.damage.IDamageChargeService;
 import com.akif.service.gateway.IPaymentGateway;
 import com.akif.service.gateway.PaymentResult;

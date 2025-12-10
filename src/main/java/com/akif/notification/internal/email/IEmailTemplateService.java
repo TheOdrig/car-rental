@@ -1,6 +1,7 @@
 package com.akif.notification.internal.email;
 
 import com.akif.event.*;
+import com.akif.rental.domain.event.*;
 
 public interface IEmailTemplateService {
 

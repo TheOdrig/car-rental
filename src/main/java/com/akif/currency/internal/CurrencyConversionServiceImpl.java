@@ -6,7 +6,7 @@ import com.akif.currency.internal.dto.ExchangeRateResponse;
 import com.akif.currency.ExchangeRatesResponse;
 import com.akif.shared.enums.CurrencyType;
 import com.akif.currency.domain.enums.RateSource;
-import com.akif.currency.ICurrencyConversionService;
+import com.akif.currency.CurrencyConversionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,11 +18,11 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CurrencyConversionServiceImpl implements ICurrencyConversionService {
+public class CurrencyConversionServiceImpl implements CurrencyConversionService {
 
     private static final CurrencyType BASE_CURRENCY = CurrencyType.USD;
 
-    private final IExchangeRateCacheService cacheService;
+    private final ExchangeRateCacheService cacheService;
 
     @Override
     public ConversionResult convert(BigDecimal amount, CurrencyType from, CurrencyType to) {

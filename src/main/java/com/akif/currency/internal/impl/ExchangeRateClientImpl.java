@@ -6,7 +6,7 @@ import com.akif.currency.internal.dto.ExchangeRateResponse;
 import com.akif.shared.enums.CurrencyType;
 import com.akif.currency.domain.enums.RateSource;
 import com.akif.exception.ExchangeRateApiException;
-import com.akif.currency.internal.IExchangeRateClient;
+import com.akif.currency.internal.ExchangeRateClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Service
 @Slf4j
-public class ExchangeRateClientImpl implements IExchangeRateClient {
+public class ExchangeRateClientImpl implements ExchangeRateClient {
 
     private final RestClient exchangeRateRestClient;
 

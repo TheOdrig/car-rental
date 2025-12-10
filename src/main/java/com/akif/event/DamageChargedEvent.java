@@ -1,7 +1,7 @@
 package com.akif.event;
 
 import com.akif.model.DamageReport;
-import com.akif.model.Payment;
+import com.akif.rental.domain.model.Payment;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 

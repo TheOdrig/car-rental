@@ -1,7 +1,7 @@
 package com.akif.car.internal.pricing.strategy;
 
 import com.akif.config.PricingConfig;
-import com.akif.repository.RentalRepository;
+import com.akif.rental.repository.RentalRepository;
 import com.akif.car.internal.pricing.PriceModifier;
 import com.akif.car.internal.pricing.PricingContext;
 import com.akif.car.internal.pricing.PricingStrategy;

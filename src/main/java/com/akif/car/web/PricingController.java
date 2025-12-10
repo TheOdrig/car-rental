@@ -2,7 +2,7 @@ package com.akif.car.web;
 
 import com.akif.car.PricingResponse;
 import com.akif.car.internal.pricing.dto.PricingRequest;
-import com.akif.car.internal.pricing.IDynamicPricingService;
+import com.akif.car.internal.pricing.DynamicPricingService;
 import com.akif.car.internal.pricing.PricingResult;
 import com.akif.car.internal.pricing.PricingStrategy;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +25,7 @@ import java.util.Map;
 @Tag(name = "Pricing", description = "Dynamic pricing management endpoints")
 public class PricingController {
 
-    private final IDynamicPricingService dynamicPricingService;
+    private final DynamicPricingService dynamicPricingService;
 
     @PostMapping("/calculate")
     @Operation(summary = "Calculate rental price", 

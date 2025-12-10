@@ -5,7 +5,7 @@ import com.akif.car.internal.dto.CarRequest;
 import com.akif.currency.ConversionResult;
 import com.akif.shared.enums.CurrencyType;
 import com.akif.car.CarService;
-import com.akif.currency.ICurrencyConversionService;
+import com.akif.currency.CurrencyConversionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
 public class CarController {
 
     private final CarService carService;
-    private final ICurrencyConversionService currencyConversionService;
+    private final CurrencyConversionService currencyConversionService;
 
 
     @GetMapping("/{id}")

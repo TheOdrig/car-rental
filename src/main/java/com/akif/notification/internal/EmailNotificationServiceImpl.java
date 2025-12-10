@@ -1,6 +1,7 @@
 package com.akif.notification.internal;
 
-import com.akif.dto.email.EmailMessage;
+import com.akif.notification.EmailMessage;
+import com.akif.rental.domain.event.*;
 import com.akif.shared.enums.EmailType;
 import com.akif.event.*;
 import com.akif.exception.EmailSendException;

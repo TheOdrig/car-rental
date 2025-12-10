@@ -5,7 +5,7 @@ import com.akif.currency.ConvertRequest;
 import com.akif.currency.ExchangeRate;
 import com.akif.currency.ExchangeRatesResponse;
 import com.akif.shared.enums.CurrencyType;
-import com.akif.currency.ICurrencyConversionService;
+import com.akif.currency.CurrencyConversionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Currency", description = "Currency conversion and exchange rate operations")
 public class CurrencyController {
 
-    private final ICurrencyConversionService currencyConversionService;
+    private final CurrencyConversionService currencyConversionService;
 
     @GetMapping
     @Operation(summary = "Get all exchange rates", description = "Returns current exchange rates for all supported currencies (USD base)")

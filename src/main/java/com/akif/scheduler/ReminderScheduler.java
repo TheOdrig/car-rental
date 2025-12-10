@@ -1,10 +1,10 @@
 package com.akif.scheduler;
 
-import com.akif.shared.enums.RentalStatus;
+import com.akif.rental.domain.enums.RentalStatus;
 import com.akif.event.PickupReminderEvent;
 import com.akif.event.ReturnReminderEvent;
-import com.akif.model.Rental;
-import com.akif.repository.RentalRepository;
+import com.akif.rental.domain.model.Rental;
+import com.akif.rental.repository.RentalRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

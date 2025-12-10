@@ -2,6 +2,7 @@ package com.akif.notification.listener;
 
 import com.akif.event.*;
 import com.akif.notification.EmailNotificationService;
+import com.akif.rental.domain.event.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

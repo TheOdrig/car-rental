@@ -3,7 +3,7 @@ package com.akif.service.gateway.impl;
 import com.akif.config.StripeConfig;
 import com.akif.shared.enums.CurrencyType;
 import com.akif.exception.PaymentFailedException;
-import com.akif.model.Payment;
+import com.akif.rental.domain.model.Payment;
 import com.akif.service.gateway.CheckoutSessionResult;
 import com.akif.service.gateway.IdempotencyKeyGenerator;
 import com.akif.service.gateway.IPaymentGateway;

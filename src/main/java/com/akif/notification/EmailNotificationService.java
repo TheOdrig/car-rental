@@ -1,6 +1,7 @@
 package com.akif.notification;
 
 import com.akif.event.*;
+import com.akif.rental.domain.event.*;
 
 public interface EmailNotificationService {
 

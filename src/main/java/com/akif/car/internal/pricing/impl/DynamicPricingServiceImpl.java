@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DynamicPricingServiceImpl implements IDynamicPricingService {
+public class DynamicPricingServiceImpl implements DynamicPricingService {
 
     private final List<PricingStrategy> allStrategies;
     private final CarRepository carRepository;
