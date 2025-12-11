@@ -8,6 +8,7 @@ import com.akif.car.repository.CarRepository;
 import com.akif.car.internal.availability.ICarAvailabilityService;
 import com.akif.car.internal.availability.ISimilarCarService;
 import com.akif.car.internal.pricing.DynamicPricingService;
+import com.akif.car.internal.pricing.PricingResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -94,7 +95,7 @@ public class SimilarCarServiceImpl implements ISimilarCarService {
                 similarityReasons.add("Similar price");
             }
 
-            var pricingResult = dynamicPricingService.calculatePrice(
+            PricingResult pricingResult = dynamicPricingService.calculatePrice(
                     car.getId(),
                     startDate,
                     endDate,

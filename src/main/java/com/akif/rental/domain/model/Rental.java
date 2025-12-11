@@ -1,7 +1,5 @@
 package com.akif.rental.domain.model;
 
-import com.akif.auth.domain.User;
-import com.akif.car.domain.Car;
 import com.akif.shared.enums.CurrencyType;
 import com.akif.rental.domain.enums.LateReturnStatus;
 import com.akif.rental.domain.enums.RentalStatus;
@@ -20,7 +18,9 @@ import java.time.LocalDateTime;
                 @Index(name = "idx_rentals_car", columnList = "car_id"),
                 @Index(name = "idx_rentals_user", columnList = "user_id"),
                 @Index(name = "idx_rentals_status", columnList = "status"),
-                @Index(name = "idx_rentals_dates", columnList = "start_date, end_date")
+                @Index(name = "idx_rentals_dates", columnList = "start_date, end_date"),
+                @Index(name = "idx_rentals_car_license_plate", columnList = "car_license_plate"),
+                @Index(name = "idx_rentals_user_email", columnList = "user_email")
         })
 @Getter
 @Setter
@@ -28,14 +28,29 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @SuperBuilder
 public class Rental extends BaseEntity {
+    
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_rental_user"))
-    private User user;
+    @Column(name = "car_id", nullable = false)
+    private Long carId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "car_id", nullable = false, foreignKey = @ForeignKey(name = "fk_rental_car"))
-    private Car car;
+
+    @Column(name = "car_brand", length = 50, nullable = false)
+    private String carBrand;
+
+    @Column(name = "car_model", length = 50, nullable = false)
+    private String carModel;
+
+    @Column(name = "car_license_plate", length = 11, nullable = false)
+    private String carLicensePlate;
+
+
+    @Column(name = "user_email", length = 255, nullable = false)
+    private String userEmail;
+
+    @Column(name = "user_full_name", length = 255, nullable = false)
+    private String userFullName;
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
@@ -128,8 +143,13 @@ public class Rental extends BaseEntity {
                 ", totalPrice=" + totalPrice +
                 ", currency=" + currency +
                 ", status=" + status +
-                ", carId=" + (car != null ? car.getId() : "N/A") +
-                ", userId=" + (user != null ? user.getId() : "N/A") +
+                ", carId=" + carId +
+                ", carBrand='" + carBrand + '\'' +
+                ", carModel='" + carModel + '\'' +
+                ", carLicensePlate='" + carLicensePlate + '\'' +
+                ", userId=" + userId +
+                ", userEmail='" + userEmail + '\'' +
+                ", userFullName='" + userFullName + '\'' +
                 '}';
     }
 }

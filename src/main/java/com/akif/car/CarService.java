@@ -59,6 +59,9 @@ public interface CarService {
 
     CarResponse reserveCar(Long id);
 
+
+    CarResponse releaseCar(Long id);
+
     CarResponse cancelReservation(Long id);
 
     CarResponse markAsMaintenance(Long id);

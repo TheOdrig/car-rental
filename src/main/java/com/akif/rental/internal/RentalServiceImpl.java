@@ -13,16 +13,16 @@ import com.akif.rental.domain.event.RentalConfirmedEvent;
 import com.akif.exception.*;
 import com.akif.rental.internal.dto.request.RentalRequest;
 import com.akif.rental.internal.mapper.RentalMapper;
-import com.akif.car.domain.Car;
 import com.akif.rental.domain.model.Payment;
 import com.akif.rental.domain.model.Rental;
-import com.akif.auth.domain.User;
-import com.akif.car.repository.CarRepository;
+import com.akif.car.CarService;
+import com.akif.car.CarDto;
+import com.akif.auth.AuthService;
+import com.akif.auth.UserDto;
 import com.akif.rental.internal.penalty.PenaltyCalculationService;
 import com.akif.rental.internal.penalty.PenaltyPaymentService;
 import com.akif.rental.repository.PaymentRepository;
 import com.akif.rental.repository.RentalRepository;
-import com.akif.auth.repository.UserRepository;
 import com.akif.service.gateway.IPaymentGateway;
 import com.akif.rental.RentalService;
 import com.akif.service.gateway.PaymentResult;
@@ -53,11 +53,13 @@ import java.time.temporal.ChronoUnit;
 public class RentalServiceImpl implements RentalService {
 
     private static final String STUB_PAYMENT_METHOD = "STUB_GATEWAY";
-
+    
     private final RentalRepository rentalRepository;
-    private final CarRepository carRepository;
-    private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
+
+    private final CarService carService;
+    private final AuthService authService;
+
     private final IPaymentGateway paymentGateway;
     private final RentalMapper rentalMapper;
     private final DynamicPricingService dynamicPricingService;
@@ -69,14 +71,18 @@ public class RentalServiceImpl implements RentalService {
     @Transactional
     public RentalResponse requestRental(RentalRequest request, String username) {
         log.info("Creating rental request for user: {}, car: {}", username, request.carId());
+        
+        UserDto user = findUserByUsername(username);
+        com.akif.car.CarResponse car = findCarById(request.carId());
 
-        User user = findUserByUsername(username);
-
-        Car car = findCarById(request.carId());
-        validateCarAvailability(car);
+        if (!car.getCarStatusType().equals(CarStatusType.AVAILABLE)) {
+            throw new CarNotAvailableException(
+                    car.getId(),
+                    "Car status is: " + car.getCarStatusType().getDisplayName()
+            );
+        }
 
         validateRentalDates(request.startDate(), request.endDate());
-
         checkDateOverlap(car.getId(), request.startDate(), request.endDate());
 
         PricingResult pricingResult = dynamicPricingService.calculatePrice(
@@ -93,10 +99,15 @@ public class RentalServiceImpl implements RentalService {
 
         log.info("Dynamic pricing applied: base={}, final={}, modifiers={}",
             pricingResult.baseTotalPrice(), pricingResult.finalPrice(), pricingResult.appliedModifiers().size());
-
+        
         Rental rental = Rental.builder()
-                .user(user)
-                .car(car)
+                .userId(user.id())
+                .carId(car.getId())
+                .carBrand(car.getBrand())
+                .carModel(car.getModel())
+                .carLicensePlate(car.getLicensePlate())
+                .userEmail(user.email())
+                .userFullName(user.firstName() + " " + user.lastName())
                 .startDate(request.startDate())
                 .endDate(request.endDate())
                 .days(days)
@@ -140,18 +151,6 @@ public class RentalServiceImpl implements RentalService {
         return result;
     }
 
-    private void validateCarAvailability(Car car) {
-        if (!car.getCarStatusType().equals(CarStatusType.AVAILABLE)) {
-            throw new CarNotAvailableException(
-                    car.getId(),
-                    "Car status is: " + car.getCarStatusType().getDisplayName()
-            );
-        }
-        if (car.isDeleted()) {
-            throw new CarNotAvailableException(car.getId(), "Car is deleted");
-        }
-    }
-
     private void validateRentalDates(LocalDate startDate, LocalDate endDate) {
         if (startDate.isBefore(LocalDate.now())) {
             throw new RentalValidationException("Start date cannot be in the past");
@@ -189,12 +188,12 @@ public class RentalServiceImpl implements RentalService {
             );
         }
 
-        checkDateOverlap(rental.getCar().getId(), rental.getStartDate(), rental.getEndDate());
+        checkDateOverlap(rental.getCarId(), rental.getStartDate(), rental.getEndDate());
 
         PaymentResult authResult = paymentGateway.authorize(
                 rental.getTotalPrice(),
                 rental.getCurrency(),
-                rental.getUser().getId().toString()
+                rental.getUserId().toString()
         );
 
         if (!authResult.success()) {
@@ -217,7 +216,7 @@ public class RentalServiceImpl implements RentalService {
 
         rental.updateStatus(RentalStatus.CONFIRMED);
 
-        rental.getCar().setCarStatusType(CarStatusType.RESERVED);
+        carService.reserveCar(rental.getCarId());
 
         Rental updatedRental = rentalRepository.save(rental);
         RentalResponse result = rentalMapper.toDto(updatedRental);
@@ -225,10 +224,10 @@ public class RentalServiceImpl implements RentalService {
         RentalConfirmedEvent event = new RentalConfirmedEvent(
                 this,
                 updatedRental.getId(),
-                updatedRental.getUser().getEmail(),
+                updatedRental.getUserEmail(),
                 LocalDateTime.now(),
-                updatedRental.getCar().getBrand(),
-                updatedRental.getCar().getModel(),
+                updatedRental.getCarBrand(),
+                updatedRental.getCarModel(),
                 updatedRental.getStartDate(),
                 updatedRental.getEndDate(),
                 updatedRental.getTotalPrice(),
@@ -287,7 +286,7 @@ public class RentalServiceImpl implements RentalService {
                 this,
                 savedPayment.getId(),
                 updatedRental.getId(),
-                updatedRental.getUser().getEmail(),
+                updatedRental.getUserEmail(),
                 savedPayment.getAmount(),
                 savedPayment.getCurrency(),
                 savedPayment.getTransactionId(),
@@ -327,8 +326,8 @@ public class RentalServiceImpl implements RentalService {
         rental.updateStatus(RentalStatus.RETURNED);
         rental.setReturnNotes(returnNotes);
 
-        Car car = rental.getCar();
-        car.setCarStatusType(CarStatusType.AVAILABLE);
+        carService.releaseCar(rental.getCarId());
+        
         Rental updatedRental = rentalRepository.save(rental);
         RentalResponse result = rentalMapper.toDto(updatedRental);
 
@@ -342,10 +341,9 @@ public class RentalServiceImpl implements RentalService {
         log.info("Cancelling rental: {} by user: {}", rentalId, username);
 
         Rental rental = findRentalById(rentalId);
-        User currentUser = findUserByUsername(username);
+        UserDto currentUser = findUserByUsername(username);
 
-        if (!currentUser.getRoles().contains(Role.ADMIN) &&
-                !rental.getUser().getId().equals(currentUser.getId())) {
+        if (!currentUser.isAdmin() && !rental.getUserId().equals(currentUser.id())) {
             throw new AccessDeniedException(
                     "You can only cancel your own rentals"
             );
@@ -368,9 +366,9 @@ public class RentalServiceImpl implements RentalService {
 
         rental.updateStatus(RentalStatus.CANCELLED);
 
-        Car car = rental.getCar();
+        com.akif.car.CarResponse car = carService.getCarById(rental.getCarId());
         if (car.getCarStatusType() == CarStatusType.RESERVED) {
-            car.setCarStatusType(CarStatusType.AVAILABLE);
+            carService.releaseCar(rental.getCarId());
         }
 
         Rental updatedRental = rentalRepository.save(rental);
@@ -379,10 +377,10 @@ public class RentalServiceImpl implements RentalService {
         RentalCancelledEvent event = new RentalCancelledEvent(
                 this,
                 updatedRental.getId(),
-                updatedRental.getUser().getEmail(),
+                updatedRental.getUserEmail(),
                 LocalDateTime.now(),
                 LocalDateTime.now(),
-                "Cancelled by " + (currentUser.getRoles().contains(Role.ADMIN) ? "admin" : "customer"),
+                "Cancelled by " + (currentUser.isAdmin() ? "admin" : "customer"),
                 refundInfo.refundProcessed(),
                 refundInfo.refundAmount(),
                 refundInfo.refundTransactionId()
@@ -479,8 +477,8 @@ public class RentalServiceImpl implements RentalService {
     public Page<RentalResponse> getMyRentals(String username, Pageable pageable) {
         log.debug("Getting rentals for user: {}", username);
 
-        User user = findUserByUsername(username);
-        Page<Rental> rentals = rentalRepository.findByUserIdAndIsDeletedFalse(user.getId(), pageable);
+        UserDto user = findUserByUsername(username);
+        Page<Rental> rentals = rentalRepository.findByUserIdAndIsDeletedFalse(user.id(), pageable);
         Page<RentalResponse> result = rentals.map(rentalMapper::toDto);
 
         log.info("Successfully retrieved {} rentals for user: {}", result.getTotalElements(), username);
@@ -504,10 +502,9 @@ public class RentalServiceImpl implements RentalService {
         log.debug("Getting rental: {} for user: {}", id, username);
 
         Rental rental = findRentalById(id);
-        User user = findUserByUsername(username);
+        UserDto user = findUserByUsername(username);
 
-        if (!user.getRoles().contains(Role.ADMIN) &&
-                !rental.getUser().getId().equals(user.getId())) {
+        if (!user.isAdmin() && !rental.getUserId().equals(user.id())) {
             throw new AccessDeniedException(
                     "You can only view your own rentals"
             );
@@ -524,14 +521,13 @@ public class RentalServiceImpl implements RentalService {
                 .orElseThrow(() -> new RentalNotFoundException(id));
     }
 
-    private Car findCarById(Long id) {
-        return carRepository.findByIdAndIsDeletedFalse(id)
-                .orElseThrow(() -> new CarNotFoundException(id));
+    
+    private com.akif.car.CarResponse findCarById(Long id) {
+        return carService.getCarById(id);
     }
 
-    private User findUserByUsername(String username) {
-        return userRepository.findByUsernameAndIsDeletedFalse(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    private UserDto findUserByUsername(String username) {
+        return authService.getUserByUsername(username);
     }
 
     private Payment findPaymentByRentalId(Long rentalId) {
@@ -600,11 +596,11 @@ public class RentalServiceImpl implements RentalService {
         PenaltySummaryEvent event = new PenaltySummaryEvent(
                 this,
                 rental.getId(),
-                rental.getUser().getEmail(),
+                rental.getUserEmail(),
                 LocalDateTime.now(),
-                rental.getCar().getBrand(),
-                rental.getCar().getModel(),
-                rental.getCar().getLicensePlate(),
+                rental.getCarBrand(),
+                rental.getCarModel(),
+                rental.getCarLicensePlate(),
                 scheduledReturnTime,
                 actualReturnTime,
                 penaltyResult.lateHours(),

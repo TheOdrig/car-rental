@@ -138,11 +138,11 @@ public class LateReturnReportServiceImpl implements LateReturnReportService {
 
         return new LateReturnReportDto(
                 rental.getId(),
-                rental.getUser().getUsername(),
-                rental.getUser().getEmail(),
-                rental.getCar().getBrand(),
-                rental.getCar().getModel(),
-                rental.getCar().getLicensePlate(),
+                rental.getUserEmail(),
+                rental.getUserEmail(),
+                rental.getCarBrand(),
+                rental.getCarModel(),
+                rental.getCarLicensePlate(),
                 rental.getEndDate(),
                 rental.getActualReturnTime(),
                 rental.getLateHours(),

@@ -2,6 +2,8 @@ package com.akif.notification.internal;
 
 import com.akif.notification.EmailMessage;
 import com.akif.rental.domain.event.*;
+import com.akif.model.DamageReport;
+import com.akif.rental.domain.model.Rental;
 import com.akif.shared.enums.EmailType;
 import com.akif.event.*;
 import com.akif.exception.EmailSendException;
@@ -366,9 +368,9 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
         backoff = @Backoff(delay = 1000, multiplier = 2)
     )
     public void sendDamageReportedNotification(DamageReportedEvent event) {
-        var damageReport = event.getDamageReport();
-        var rental = damageReport.getRental();
-        String customerEmail = rental.getUser().getEmail();
+        DamageReport damageReport = event.getDamageReport();
+        Rental rental = damageReport.getRental();
+        String customerEmail = rental.getUserEmail();
         
         log.info("Queuing damage reported email. DamageId: {}, Recipient: {}", 
             damageReport.getId(), customerEmail);
@@ -400,9 +402,9 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
         backoff = @Backoff(delay = 1000, multiplier = 2)
     )
     public void sendDamageAssessedNotification(DamageAssessedEvent event) {
-        var damageReport = event.getDamageReport();
-        var rental = damageReport.getRental();
-        String customerEmail = rental.getUser().getEmail();
+        DamageReport damageReport = event.getDamageReport();
+        Rental rental = damageReport.getRental();
+        String customerEmail = rental.getUserEmail();
         
         log.info("Queuing damage assessed email. DamageId: {}, Recipient: {}", 
             damageReport.getId(), customerEmail);
@@ -434,9 +436,9 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
         backoff = @Backoff(delay = 1000, multiplier = 2)
     )
     public void sendDamageChargedNotification(DamageChargedEvent event) {
-        var damageReport = event.getDamageReport();
-        var rental = damageReport.getRental();
-        String customerEmail = rental.getUser().getEmail();
+        DamageReport damageReport = event.getDamageReport();
+        Rental rental = damageReport.getRental();
+        String customerEmail = rental.getUserEmail();
         
         log.info("Queuing damage charged email. DamageId: {}, Recipient: {}", 
             damageReport.getId(), customerEmail);
@@ -468,9 +470,9 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
         backoff = @Backoff(delay = 1000, multiplier = 2)
     )
     public void sendDamageDisputedNotification(DamageDisputedEvent event) {
-        var damageReport = event.getDamageReport();
-        var rental = damageReport.getRental();
-        String customerEmail = rental.getUser().getEmail();
+        DamageReport damageReport = event.getDamageReport();
+        Rental rental = damageReport.getRental();
+        String customerEmail = rental.getUserEmail();
         
         log.info("Queuing damage disputed email. DamageId: {}, Recipient: {}", 
             damageReport.getId(), customerEmail);
@@ -502,9 +504,9 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
         backoff = @Backoff(delay = 1000, multiplier = 2)
     )
     public void sendDamageResolvedNotification(DamageResolvedEvent event) {
-        var damageReport = event.getDamageReport();
-        var rental = damageReport.getRental();
-        String customerEmail = rental.getUser().getEmail();
+        DamageReport damageReport = event.getDamageReport();
+        Rental rental = damageReport.getRental();
+        String customerEmail = rental.getUserEmail();
         
         log.info("Queuing damage resolved email. DamageId: {}, Recipient: {}", 
             damageReport.getId(), customerEmail);

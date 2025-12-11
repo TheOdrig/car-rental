@@ -76,8 +76,7 @@ public class LateReturnDetectionServiceImpl implements LateReturnDetectionServic
                             
                             log.debug("Updated rental {} to status: {}, late hours: {}", 
                                     rental.getId(), newStatus, lateHours);
-                            
-                            // Publish appropriate event on status change
+
                             publishEventForStatusChange(rental, newStatus, currentTime);
                         }
                     } catch (Exception e) {
@@ -156,9 +155,9 @@ public class LateReturnDetectionServiceImpl implements LateReturnDetectionServic
     
     private void publishEventForStatusChange(Rental rental, LateReturnStatus newStatus, LocalDateTime currentTime) {
         try {
-            String carBrand = rental.getCar().getBrand();
-            String carModel = rental.getCar().getModel();
-            String licensePlate = rental.getCar().getLicensePlate();
+            String carBrand = rental.getCarBrand();
+            String carModel = rental.getCarModel();
+            String licensePlate = rental.getCarLicensePlate();
             LocalDateTime scheduledReturnTime = rental.getEndDate().atTime(LocalTime.MAX);
             
             switch (newStatus) {
@@ -175,7 +174,6 @@ public class LateReturnDetectionServiceImpl implements LateReturnDetectionServic
                     break;
                     
                 default:
-                    // ON_TIME durumu için event yayınlamıyoruz
                     break;
             }
         } catch (Exception e) {
@@ -192,11 +190,11 @@ public class LateReturnDetectionServiceImpl implements LateReturnDetectionServic
         if (remainingGraceMinutes < 0) {
             remainingGraceMinutes = 0;
         }
-        
+
         GracePeriodWarningEvent event = new GracePeriodWarningEvent(
                 this,
                 rental.getId(),
-                rental.getUser().getEmail(),
+                rental.getUserEmail(),
                 currentTime,
                 carBrand,
                 carModel,
@@ -215,11 +213,11 @@ public class LateReturnDetectionServiceImpl implements LateReturnDetectionServic
         int lateHours = rental.getLateHours() != null ? rental.getLateHours() : 0;
         
         PenaltyResult penaltyResult = penaltyCalculationService.calculatePenalty(rental, currentTime);
-        
+
         LateReturnNotificationEvent event = new LateReturnNotificationEvent(
                 this,
                 rental.getId(),
-                rental.getUser().getEmail(),
+                rental.getUserEmail(),
                 currentTime,
                 carBrand,
                 carModel,
@@ -244,11 +242,11 @@ public class LateReturnDetectionServiceImpl implements LateReturnDetectionServic
         
         String escalationWarning = "Your rental is severely overdue. Please return the vehicle immediately " +
                 "to avoid further penalties and potential legal action.";
-        
+
         SeverelyLateNotificationEvent event = new SeverelyLateNotificationEvent(
                 this,
                 rental.getId(),
-                rental.getUser().getEmail(),
+                rental.getUserEmail(),
                 currentTime,
                 carBrand,
                 carModel,

@@ -55,12 +55,12 @@ public class PenaltyPaymentServiceImpl implements PenaltyPaymentService {
     public PaymentResult chargePenalty(Payment penaltyPayment) {
         log.debug("Attempting to charge penalty payment: {}", penaltyPayment.getId());
 
-        if (penaltyPayment.getRental() == null || penaltyPayment.getRental().getUser() == null) {
-            throw new IllegalArgumentException("Penalty payment must have associated rental and user");
+        if (penaltyPayment.getRental() == null) {
+            throw new IllegalArgumentException("Penalty payment must have associated rental");
         }
 
         try {
-            String customerId = penaltyPayment.getRental().getUser().getId().toString();
+            String customerId = penaltyPayment.getRental().getUserId().toString();
 
             PaymentResult authorizeResult = paymentGateway.authorize(
                     penaltyPayment.getAmount(),
@@ -133,7 +133,7 @@ public class PenaltyPaymentServiceImpl implements PenaltyPaymentService {
                 penaltyPayment.getRental().getId(),
                 penaltyPayment.getAmount(),
                 penaltyPayment.getCurrency(),
-                penaltyPayment.getRental().getUser().getEmail(),
+                penaltyPayment.getRental().getUserEmail(),
                 penaltyPayment.getFailureReason());
 
         log.info("Marked penalty payment as PENDING for manual processing: ID={}", 

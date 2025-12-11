@@ -409,6 +409,30 @@ public class CarServiceImpl implements CarService {
     @Override
     @Transactional
     @CacheEvict(value = "cars", allEntries = true)
+    public CarResponse releaseCar(Long id) {
+        log.debug("Releasing car after rental ends, id: {}", id);
+        validateCarId(id);
+
+        Car car = findCarById(id);
+
+        if (car.getCarStatusType() != CarStatusType.RESERVED) {
+            log.warn("Car {} is not reserved, current status: {}", car.getId(), car.getCarStatusType());
+            throw new InvalidStatusTransitionException("Car is not in RESERVED status, current status: " + car.getCarStatusType());
+        }
+
+        car.markAsAvailable();
+        car.setUpdateTime(LocalDateTime.now());
+
+        Car savedCar = carRepository.save(car);
+        CarResponse result = carMapper.toDto(savedCar);
+
+        log.info("Successfully released car after rental: ID={}, License Plate={}", result.getId(), result.getLicensePlate());
+        return result;
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = "cars", allEntries = true)
     public CarResponse markAsMaintenance(Long id) {
         log.debug("Marking car as maintenance with id: {}", id);
         validateCarId(id);

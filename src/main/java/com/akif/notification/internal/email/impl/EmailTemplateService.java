@@ -3,6 +3,10 @@ package com.akif.notification.internal.email.impl;
 import com.akif.event.*;
 import com.akif.notification.internal.email.IEmailTemplateService;
 import com.akif.rental.domain.event.*;
+import com.akif.model.DamageReport;
+import com.akif.rental.domain.model.Rental;
+import com.akif.rental.domain.model.Payment;
+import com.akif.car.domain.Car;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -172,9 +176,9 @@ public class EmailTemplateService implements IEmailTemplateService {
     
     @Override
     public String renderDamageReportedEmail(DamageReportedEvent event) {
-        var damageReport = event.getDamageReport();
-        var rental = damageReport.getRental();
-        var car = damageReport.getCar();
+        DamageReport damageReport = event.getDamageReport();
+        Rental rental = damageReport.getRental();
+        Car car = damageReport.getCar();
         
         log.debug("Rendering damage reported email for damage ID: {}", damageReport.getId());
         
@@ -192,9 +196,9 @@ public class EmailTemplateService implements IEmailTemplateService {
     
     @Override
     public String renderDamageAssessedEmail(DamageAssessedEvent event) {
-        var damageReport = event.getDamageReport();
-        var rental = damageReport.getRental();
-        var car = damageReport.getCar();
+        DamageReport damageReport = event.getDamageReport();
+        Rental rental = damageReport.getRental();
+        Car car = damageReport.getCar();
         
         log.debug("Rendering damage assessed email for damage ID: {}", damageReport.getId());
         
@@ -214,10 +218,10 @@ public class EmailTemplateService implements IEmailTemplateService {
     
     @Override
     public String renderDamageChargedEmail(DamageChargedEvent event) {
-        var damageReport = event.getDamageReport();
-        var payment = event.getPayment();
-        var rental = damageReport.getRental();
-        var car = damageReport.getCar();
+        DamageReport damageReport = event.getDamageReport();
+        Payment payment = event.getPayment();
+        Rental rental = damageReport.getRental();
+        Car car = damageReport.getCar();
         
         log.debug("Rendering damage charged email for damage ID: {}", damageReport.getId());
         
@@ -235,9 +239,9 @@ public class EmailTemplateService implements IEmailTemplateService {
     
     @Override
     public String renderDamageDisputedEmail(DamageDisputedEvent event) {
-        var damageReport = event.getDamageReport();
-        var rental = damageReport.getRental();
-        var car = damageReport.getCar();
+        DamageReport damageReport = event.getDamageReport();
+        Rental rental = damageReport.getRental();
+        Car car = damageReport.getCar();
         
         log.debug("Rendering damage disputed email for damage ID: {}", damageReport.getId());
         
@@ -255,9 +259,9 @@ public class EmailTemplateService implements IEmailTemplateService {
     
     @Override
     public String renderDamageResolvedEmail(DamageResolvedEvent event) {
-        var damageReport = event.getDamageReport();
-        var rental = damageReport.getRental();
-        var car = damageReport.getCar();
+        DamageReport damageReport = event.getDamageReport();
+        Rental rental = damageReport.getRental();
+        Car car = damageReport.getCar();
         
         log.debug("Rendering damage resolved email for damage ID: {}", damageReport.getId());
         

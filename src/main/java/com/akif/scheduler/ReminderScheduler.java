@@ -110,12 +110,12 @@ public class ReminderScheduler {
         PickupReminderEvent event = new PickupReminderEvent(
                 this,
                 rental.getId(),
-                rental.getUser().getEmail(),
+                rental.getUserEmail(),
                 LocalDateTime.now(),
                 rental.getStartDate(),
                 "Pickup Location", // TODO: Add pickup location to Rental entity if needed
-                rental.getCar().getBrand(),
-                rental.getCar().getModel()
+                rental.getCarBrand(),
+                rental.getCarModel()
         );
         eventPublisher.publishEvent(event);
     }
@@ -124,7 +124,7 @@ public class ReminderScheduler {
         ReturnReminderEvent event = new ReturnReminderEvent(
                 this,
                 rental.getId(),
-                rental.getUser().getEmail(),
+                rental.getUserEmail(),
                 LocalDateTime.now(),
                 rental.getEndDate(),
                 "Return Location", // TODO: Add return location to Rental entity if needed
