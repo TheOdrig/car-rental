@@ -1,9 +1,9 @@
 package com.akif.car.web;
 
-import com.akif.car.CarResponse;
-import com.akif.car.internal.pricing.dto.CarPriceUpdateRequest;
-import com.akif.car.internal.dto.CarStatusUpdateRequest;
-import com.akif.car.CarService;
+import com.akif.car.api.CarResponse;
+import com.akif.car.internal.dto.pricing.CarPriceUpdateRequest;
+import com.akif.car.internal.dto.request.CarStatusUpdateRequest;
+import com.akif.car.api.CarService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

@@ -1,9 +1,9 @@
 package com.akif.rental.web;
 
-import com.akif.rental.internal.report.dto.LateReturnFilterDto;
-import com.akif.rental.internal.report.dto.LateReturnReportDto;
-import com.akif.rental.internal.report.dto.LateReturnStatisticsDto;
-import com.akif.rental.internal.report.LateReturnReportService;
+import com.akif.rental.internal.dto.report.LateReturnFilterDto;
+import com.akif.rental.internal.dto.report.LateReturnReportDto;
+import com.akif.rental.internal.dto.report.LateReturnStatisticsDto;
+import com.akif.rental.internal.service.report.LateReturnReportService;
 import com.akif.rental.domain.enums.LateReturnStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

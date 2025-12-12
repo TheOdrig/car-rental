@@ -1,7 +1,8 @@
 package com.akif.notification;
 
-import com.akif.event.*;
-import com.akif.rental.domain.event.*;
+import com.akif.damage.api.*;
+import com.akif.payment.api.PaymentCapturedEvent;
+import com.akif.rental.api.*;
 
 public interface EmailNotificationService {
 

@@ -1,6 +1,6 @@
 package com.akif.rental.internal.scheduler;
 
-import com.akif.rental.internal.detection.LateReturnDetectionService;
+import com.akif.rental.internal.service.detection.LateReturnDetectionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

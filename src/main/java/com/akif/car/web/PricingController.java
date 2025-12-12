@@ -1,10 +1,10 @@
 package com.akif.car.web;
 
-import com.akif.car.PricingResponse;
-import com.akif.car.internal.pricing.dto.PricingRequest;
-import com.akif.car.internal.pricing.DynamicPricingService;
-import com.akif.car.internal.pricing.PricingResult;
-import com.akif.car.internal.pricing.PricingStrategy;
+import com.akif.car.internal.dto.response.PricingResponse;
+import com.akif.car.internal.dto.pricing.PricingRequest;
+import com.akif.car.internal.service.pricing.DynamicPricingService;
+import com.akif.car.internal.dto.pricing.PricingResult;
+import com.akif.car.internal.service.pricing.PricingStrategy;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

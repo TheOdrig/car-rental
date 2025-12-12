@@ -1,8 +1,8 @@
 package com.akif.shared.handler;
 
-import com.akif.auth.OAuth2ErrorResponse;
+import com.akif.auth.internal.dto.oauth2.OAuth2ErrorResponse;
 import com.akif.shared.exception.BaseException;
-import com.akif.exception.OAuth2AuthenticationException;
+import com.akif.auth.internal.exceptipn.OAuth2AuthenticationException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;

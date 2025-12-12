@@ -1,13 +1,13 @@
 package com.akif.rental.web;
 
-import com.akif.currency.ConversionResult;
-import com.akif.rental.RentalResponse;
+import com.akif.currency.api.ConversionResult;
+import com.akif.rental.api.RentalResponse;
 import com.akif.rental.internal.dto.request.PickupRequest;
 import com.akif.rental.internal.dto.request.RentalRequest;
 import com.akif.rental.internal.dto.request.ReturnRequest;
 import com.akif.shared.enums.CurrencyType;
-import com.akif.rental.RentalService;
-import com.akif.currency.CurrencyConversionService;
+import com.akif.rental.api.RentalService;
+import com.akif.currency.api.CurrencyConversionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

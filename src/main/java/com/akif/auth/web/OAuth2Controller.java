@@ -1,10 +1,10 @@
 package com.akif.auth.web;
 
-import com.akif.auth.LinkAccountResponse;
-import com.akif.auth.AuthResponse;
+import com.akif.auth.internal.dto.oauth2.LinkAccountResponse;
+import com.akif.auth.api.AuthResponse;
 import com.akif.auth.domain.User;
-import com.akif.auth.repository.UserRepository;
-import com.akif.auth.internal.oauth2.IOAuth2AuthService;
+import com.akif.auth.internal.repository.UserRepository;
+import com.akif.auth.internal.service.oauth2.OAuth2AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,7 +27,7 @@ import java.io.IOException;
 @Tag(name = "OAuth2", description = "OAuth2 Social Login endpoints")
 public class OAuth2Controller {
 
-    private final IOAuth2AuthService oAuth2AuthService;
+    private final OAuth2AuthService oAuth2AuthService;
     private final UserRepository userRepository;
 
     @GetMapping("/authorize/{provider}")

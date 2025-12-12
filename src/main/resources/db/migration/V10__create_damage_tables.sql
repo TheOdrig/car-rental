@@ -10,6 +10,17 @@ CREATE TABLE IF NOT EXISTS gallery.damage_reports (
     rental_id BIGINT NOT NULL,
     car_id BIGINT NOT NULL,
 
+    car_brand VARCHAR(50) NOT NULL,
+    car_model VARCHAR(50) NOT NULL,
+    car_license_plate VARCHAR(11) NOT NULL,
+
+
+    rental_start_date DATE NOT NULL,
+    rental_end_date DATE NOT NULL,
+    customer_email VARCHAR(255) NOT NULL,
+    customer_full_name VARCHAR(255) NOT NULL,
+    customer_user_id BIGINT NOT NULL,
+
     description VARCHAR(1000) NOT NULL,
     damage_location VARCHAR(200),
     severity VARCHAR(20),
@@ -29,6 +40,7 @@ CREATE TABLE IF NOT EXISTS gallery.damage_reports (
 
     payment_id BIGINT,
     payment_status VARCHAR(20),
+    transaction_id VARCHAR(100),
 
     dispute_reason VARCHAR(500),
     dispute_comments VARCHAR(1000),
@@ -37,10 +49,8 @@ CREATE TABLE IF NOT EXISTS gallery.damage_reports (
 
     resolution_notes VARCHAR(1000),
     resolved_by BIGINT,
-    resolved_at TIMESTAMP(6),
+    resolved_at TIMESTAMP(6)
 
-    CONSTRAINT fk_damage_report_rental FOREIGN KEY (rental_id) REFERENCES gallery.rentals(id) ON DELETE RESTRICT,
-    CONSTRAINT fk_damage_report_car FOREIGN KEY (car_id) REFERENCES gallery.car(id) ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS gallery.damage_photos (
@@ -68,6 +78,7 @@ CREATE TABLE IF NOT EXISTS gallery.damage_photos (
 
 CREATE INDEX IF NOT EXISTS idx_damage_reports_rental ON gallery.damage_reports(rental_id);
 CREATE INDEX IF NOT EXISTS idx_damage_reports_car ON gallery.damage_reports(car_id);
+CREATE INDEX IF NOT EXISTS idx_damage_reports_customer ON gallery.damage_reports(customer_user_id);
 CREATE INDEX IF NOT EXISTS idx_damage_reports_status ON gallery.damage_reports(status);
 CREATE INDEX IF NOT EXISTS idx_damage_reports_reported_at ON gallery.damage_reports(reported_at);
 

@@ -1,8 +1,6 @@
 package com.akif.rental.internal.mapper;
 
-import com.akif.car.internal.mapper.CarMapper;
-import com.akif.rental.RentalResponse;
-import com.akif.rental.internal.dto.request.RentalRequest;
+import com.akif.rental.api.RentalResponse;
 import com.akif.rental.domain.model.Rental;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

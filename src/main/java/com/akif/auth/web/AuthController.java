@@ -1,10 +1,10 @@
 package com.akif.auth.web;
 
-import com.akif.auth.LoginRequest;
-import com.akif.auth.RefreshTokenRequest;
-import com.akif.auth.RegisterRequest;
-import com.akif.auth.AuthResponse;
-import com.akif.auth.AuthService;
+import com.akif.auth.internal.dto.LoginRequest;
+import com.akif.auth.internal.dto.RefreshTokenRequest;
+import com.akif.auth.internal.dto.RegisterRequest;
+import com.akif.auth.api.AuthResponse;
+import com.akif.auth.api.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

@@ -1,9 +1,9 @@
 package com.akif.car.internal.mapper;
 
-import com.akif.car.CarDto;
-import com.akif.car.CarSummaryResponse;
-import com.akif.car.internal.dto.CarRequest;
-import com.akif.car.CarResponse;
+import com.akif.car.api.CarDto;
+import com.akif.car.api.CarSummaryResponse;
+import com.akif.car.internal.dto.request.CarRequest;
+import com.akif.car.api.CarResponse;
 import com.akif.car.domain.Car;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

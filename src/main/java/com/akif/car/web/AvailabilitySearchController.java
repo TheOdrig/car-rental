@@ -1,11 +1,11 @@
 package com.akif.car.web;
 
-import com.akif.car.internal.availability.dto.AvailabilitySearchRequest;
-import com.akif.car.AvailabilitySearchResponse;
-import com.akif.car.CarAvailabilityCalendarDto;
-import com.akif.car.SimilarCarDto;
-import com.akif.car.internal.availability.ICarAvailabilityService;
-import com.akif.car.internal.availability.ISimilarCarService;
+import com.akif.car.internal.dto.availability.AvailabilitySearchRequest;
+import com.akif.car.internal.dto.availability.AvailabilitySearchResponse;
+import com.akif.car.internal.dto.availability.CarAvailabilityCalendarDto;
+import com.akif.car.internal.dto.availability.SimilarCarDto;
+import com.akif.car.internal.service.availability.CarAvailabilityService;
+import com.akif.car.internal.service.availability.SimilarCarService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,8 +31,8 @@ import java.util.List;
 @Tag(name = "Availability Search", description = "Car availability search and calendar operations")
 public class AvailabilitySearchController {
 
-    private final ICarAvailabilityService carAvailabilityService;
-    private final ISimilarCarService similarCarService;
+    private final CarAvailabilityService carAvailabilityService;
+    private final SimilarCarService similarCarService;
 
     @PostMapping("/availability/search")
     @Operation(summary = "Search available cars", 

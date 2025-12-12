@@ -1,11 +1,11 @@
 package com.akif.currency.web;
 
-import com.akif.currency.ConversionResult;
-import com.akif.currency.ConvertRequest;
-import com.akif.currency.ExchangeRate;
-import com.akif.currency.ExchangeRatesResponse;
+import com.akif.currency.api.ConversionResult;
+import com.akif.currency.internal.dto.ConvertRequest;
+import com.akif.currency.api.ExchangeRate;
+import com.akif.currency.api.ExchangeRatesResponse;
 import com.akif.shared.enums.CurrencyType;
-import com.akif.currency.CurrencyConversionService;
+import com.akif.currency.api.CurrencyConversionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

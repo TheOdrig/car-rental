@@ -1,11 +1,11 @@
 package com.akif.rental.web;
 
-import com.akif.rental.internal.penalty.dto.PenaltyWaiverRequest;
-import com.akif.rental.internal.penalty.dto.PenaltyWaiverResponse;
+import com.akif.rental.internal.dto.penalty.PenaltyWaiverRequest;
+import com.akif.rental.internal.dto.penalty.PenaltyWaiverResponse;
 import com.akif.rental.domain.model.PenaltyWaiver;
 import com.akif.auth.domain.User;
-import com.akif.auth.repository.UserRepository;
-import com.akif.rental.internal.penalty.PenaltyWaiverService;
+import com.akif.auth.internal.repository.UserRepository;
+import com.akif.rental.internal.service.penalty.PenaltyWaiverService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

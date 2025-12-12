@@ -1,11 +1,11 @@
 package com.akif.car.web;
 
-import com.akif.car.CarResponse;
-import com.akif.car.CarSummaryResponse;
-import com.akif.car.internal.dto.CarSearchRequest;
-import com.akif.car.CarListResponseDto;
+import com.akif.car.api.CarResponse;
+import com.akif.car.api.CarSummaryResponse;
+import com.akif.car.internal.dto.request.CarSearchRequest;
+import com.akif.car.internal.dto.response.CarListResponse;
 import com.akif.car.domain.enums.CarStatusType;
-import com.akif.car.CarService;
+import com.akif.car.api.CarService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,13 +38,13 @@ public class CarSearchController {
     @Operation(summary = "Search cars", description = "Search cars with various criteria")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Search completed successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CarListResponseDto.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CarListResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid search criteria")
     })
-    public ResponseEntity<CarListResponseDto> searchCars(
+    public ResponseEntity<CarListResponse> searchCars(
             @Parameter(description = "Search criteria", required = true) @Valid @RequestBody CarSearchRequest searchRequest) {
         log.debug("POST /api/cars/search - Searching cars with criteria: {}", searchRequest);
-        CarListResponseDto result = carService.searchCars(searchRequest);
+        CarListResponse result = carService.searchCars(searchRequest);
         log.info("Search completed: found {} cars", result.totalElements());
         return ResponseEntity.ok(result);
     }

@@ -1,11 +1,11 @@
 package com.akif.car.web;
 
-import com.akif.car.CarResponse;
-import com.akif.car.internal.dto.CarRequest;
-import com.akif.currency.ConversionResult;
+import com.akif.car.api.CarResponse;
+import com.akif.car.internal.dto.request.CarRequest;
+import com.akif.currency.api.ConversionResult;
 import com.akif.shared.enums.CurrencyType;
-import com.akif.car.CarService;
-import com.akif.currency.CurrencyConversionService;
+import com.akif.car.api.CarService;
+import com.akif.currency.api.CurrencyConversionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
