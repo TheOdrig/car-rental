@@ -1,0 +1,33 @@
+package com.akif.car.api;
+
+import com.akif.car.domain.enums.CarStatusType;
+import com.akif.shared.enums.CurrencyType;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.math.BigDecimal;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record CarSummaryResponse(
+
+    Long id,
+    String licensePlate,
+    String brand,
+    String model,
+    Integer productionYear,
+    String formattedPrice,
+    CurrencyType currencyType,
+    CarStatusType carStatusType,
+    String color,
+    Long kilometer,
+    String thumbnailUrl,
+    Boolean isFeatured,
+    BigDecimal rating,
+    Long viewCount,
+    Long likeCount,
+
+    Integer age,
+    String fullName,
+    String displayName,
+    Boolean isNew,
+    Boolean isAvailable
+) {}
