@@ -1,0 +1,33 @@
+package com.akif.damage.api;
+
+import com.akif.damage.domain.enums.DamageCategory;
+import com.akif.damage.domain.enums.DamageSeverity;
+import com.akif.damage.domain.enums.DamageStatus;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record DamageReportDto(
+    Long id,
+    Long rentalId,
+    Long carId,
+    String carLicensePlate,
+    String customerName,
+    String description,
+    String damageLocation,
+    DamageSeverity severity,
+    DamageCategory category,
+    DamageStatus status,
+    BigDecimal repairCostEstimate,
+    BigDecimal customerLiability,
+    Boolean insuranceCoverage,
+    LocalDateTime reportedAt,
+    LocalDateTime assessedAt
+) {
+
+    public boolean isPending() {
+        return status != null && !status.isTerminal();
+    }
+}

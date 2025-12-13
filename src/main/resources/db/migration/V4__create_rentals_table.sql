@@ -2,6 +2,14 @@ CREATE TABLE IF NOT EXISTS gallery.rentals (
                                                id BIGSERIAL PRIMARY KEY,
                                                user_id BIGINT NOT NULL,
                                                car_id BIGINT NOT NULL,
+
+                                               car_brand VARCHAR(50) NOT NULL,
+                                               car_model VARCHAR(50) NOT NULL,
+                                               car_license_plate VARCHAR(11) NOT NULL,
+
+                                               user_email VARCHAR(255) NOT NULL,
+                                               user_full_name VARCHAR(255) NOT NULL,
+
                                                start_date DATE NOT NULL,
                                                end_date DATE NOT NULL,
                                                days INTEGER NOT NULL,
@@ -11,12 +19,14 @@ CREATE TABLE IF NOT EXISTS gallery.rentals (
                                                status VARCHAR(20) NOT NULL,
                                                pickup_notes TEXT,
                                                return_notes TEXT,
+
                                                create_time TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                                update_time TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                                created_by VARCHAR(100),
                                                updated_by VARCHAR(100),
                                                version BIGINT DEFAULT 0,
                                                is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+
                                                CONSTRAINT fk_rental_user FOREIGN KEY (user_id) REFERENCES gallery.users(id) ON DELETE RESTRICT,
                                                CONSTRAINT fk_rental_car FOREIGN KEY (car_id) REFERENCES gallery.car(id) ON DELETE RESTRICT,
                                                CONSTRAINT chk_rental_dates CHECK (end_date >= start_date),
@@ -26,8 +36,12 @@ CREATE TABLE IF NOT EXISTS gallery.rentals (
 
 CREATE INDEX IF NOT EXISTS idx_rentals_car ON gallery.rentals(car_id);
 CREATE INDEX IF NOT EXISTS idx_rentals_user ON gallery.rentals(user_id);
+
 CREATE INDEX IF NOT EXISTS idx_rentals_status ON gallery.rentals(status);
 CREATE INDEX IF NOT EXISTS idx_rentals_dates ON gallery.rentals(start_date, end_date);
+
+CREATE INDEX IF NOT EXISTS idx_rentals_car_license_plate ON gallery.rentals(car_license_plate);
+CREATE INDEX IF NOT EXISTS idx_rentals_user_email ON gallery.rentals(user_email);
 
 
 CREATE TABLE IF NOT EXISTS gallery.payments (
