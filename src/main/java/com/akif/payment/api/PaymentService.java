@@ -40,6 +40,8 @@ public interface PaymentService {
 
     List<MonthlyRevenueProjection> getMonthlyRevenue(int months);
 
+    int countFailedPayments();
+
     interface DailyRevenueProjection {
        LocalDate getDate();
         BigDecimal getRevenue();

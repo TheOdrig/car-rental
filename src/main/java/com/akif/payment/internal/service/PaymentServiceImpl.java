@@ -296,6 +296,11 @@ class PaymentServiceImpl implements PaymentService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public int countFailedPayments() {
+        return paymentRepository.countByStatusAndIsDeletedFalse(PaymentStatus.FAILED);
+    }
+
     private record DailyRevenueProjectionImpl(
             LocalDate date,
             BigDecimal revenue, 

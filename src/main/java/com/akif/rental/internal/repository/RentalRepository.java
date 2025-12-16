@@ -190,4 +190,14 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
             ORDER BY r.endDate ASC
             """)
     Page<Rental> findTodaysReturns(@Param("today") LocalDate today, Pageable pageable);
+
+    @Query("""
+            SELECT COALESCE(AVG(r.days), 0.0) FROM Rental r 
+            WHERE r.status = com.akif.rental.domain.enums.RentalStatus.RETURNED 
+            AND (:startDate IS NULL OR r.endDate >= :startDate) 
+            AND (:endDate IS NULL OR r.endDate <= :endDate) 
+            AND r.isDeleted = false
+            """)
+    Double averageRentalDurationDays(@Param("startDate") LocalDate startDate,
+                                     @Param("endDate") LocalDate endDate);
 }

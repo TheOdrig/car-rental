@@ -44,4 +44,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findByStatusAndCreateTimeAfter(
             @Param("status") PaymentStatus status, 
             @Param("start") LocalDateTime start);
+
+    int countByStatusAndIsDeletedFalse(PaymentStatus status);
 }

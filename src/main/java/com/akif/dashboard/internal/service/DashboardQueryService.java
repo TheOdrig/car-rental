@@ -90,11 +90,9 @@ public class DashboardQueryService {
         int completedRentals = rentalService.countByStatus(RentalStatus.RETURNED);
         int cancelledRentals = rentalService.countByStatus(RentalStatus.CANCELLED);
         
-        // TODO: Add separate API methods for penalty and damage revenue
-        BigDecimal penaltyRevenue = BigDecimal.ZERO;
-        BigDecimal damageCharges = BigDecimal.ZERO;
-        // TODO: Calculate average rental duration from RentalService
-        BigDecimal averageRentalDurationDays = BigDecimal.valueOf(3.5);
+        BigDecimal penaltyRevenue = rentalService.sumCollectedPenaltyRevenue(startDate, endDate);
+        BigDecimal damageCharges = damageService.sumDamageCharges(startDate, endDate);
+        BigDecimal averageRentalDurationDays = rentalService.getAverageRentalDurationDays(startDate, endDate);
         
         return new MonthlyMetricsDto(
             totalRevenue,
@@ -165,11 +163,12 @@ public class DashboardQueryService {
     private RevenueBreakdownDto calculateRevenueBreakdown() {
         LocalDateTime startOfMonth = LocalDate.now().withDayOfMonth(1).atStartOfDay();
         LocalDateTime endOfMonth = LocalDateTime.now();
+        LocalDate startDate = LocalDate.now().withDayOfMonth(1);
+        LocalDate endDate = LocalDate.now();
         
         BigDecimal rentalRevenue = paymentService.sumCapturedPaymentsBetween(startOfMonth, endOfMonth);
-        // TODO: Add separate API methods for penalty and damage charges
-        BigDecimal penaltyRevenue = BigDecimal.ZERO;
-        BigDecimal damageCharges = BigDecimal.ZERO;
+        BigDecimal penaltyRevenue = rentalService.sumCollectedPenaltyRevenue(startDate, endDate);
+        BigDecimal damageCharges = damageService.sumDamageCharges(startDate, endDate);
         
         BigDecimal totalRevenue = rentalRevenue.add(penaltyRevenue).add(damageCharges);
         

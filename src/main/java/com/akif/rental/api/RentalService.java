@@ -5,6 +5,9 @@ import com.akif.rental.internal.dto.request.RentalRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 public interface RentalService {
 
     RentalResponse requestRental(RentalRequest request, String username);
@@ -43,4 +46,8 @@ public interface RentalService {
     Page<RentalResponse> findTodaysReturns(Pageable pageable);
 
     Page<RentalResponse> findOverdueRentals(Pageable pageable);
+
+    BigDecimal sumCollectedPenaltyRevenue(LocalDate startDate, LocalDate endDate);
+
+    BigDecimal getAverageRentalDurationDays(LocalDate startDate, LocalDate endDate);
 }
