@@ -1,5 +1,6 @@
 package com.akif.rental.api;
 
+import com.akif.rental.domain.enums.RentalStatus;
 import com.akif.rental.internal.dto.request.RentalRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,4 +26,21 @@ public interface RentalService {
     RentalSummaryDto getRentalSummaryById(Long rentalId);
 
     void incrementDamageReportCount(Long rentalId);
+
+
+    int countByStatus(RentalStatus status);
+
+    int countTodaysPickups();
+
+    int countTodaysReturns();
+
+    int countOverdueRentals();
+
+    Page<RentalResponse> findPendingApprovals(Pageable pageable);
+
+    Page<RentalResponse> findTodaysPickups(Pageable pageable);
+
+    Page<RentalResponse> findTodaysReturns(Pageable pageable);
+
+    Page<RentalResponse> findOverdueRentals(Pageable pageable);
 }

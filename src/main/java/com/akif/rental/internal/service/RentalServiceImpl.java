@@ -659,4 +659,49 @@ public class RentalServiceImpl implements RentalService {
         log.info("Incremented damage report count for rental: {} (new count: {})", 
                 rentalId, rental.getDamageReportsCount());
     }
+
+
+    @Override
+    public int countByStatus(RentalStatus status) {
+        return rentalRepository.countByStatusAndIsDeletedFalse(status);
+    }
+
+    @Override
+    public int countTodaysPickups() {
+        return rentalRepository.countTodaysPickups(LocalDate.now());
+    }
+
+    @Override
+    public int countTodaysReturns() {
+        return rentalRepository.countTodaysReturns(LocalDate.now());
+    }
+
+    @Override
+    public int countOverdueRentals() {
+        return rentalRepository.countOverdueRentals(LocalDate.now());
+    }
+
+    @Override
+    public Page<RentalResponse> findPendingApprovals(Pageable pageable) {
+        Page<Rental> rentals = rentalRepository.findPendingApprovals(pageable);
+        return rentals.map(rentalMapper::toDto);
+    }
+
+    @Override
+    public Page<RentalResponse> findTodaysPickups(Pageable pageable) {
+        Page<Rental> rentals = rentalRepository.findTodaysPickups(LocalDate.now(), pageable);
+        return rentals.map(rentalMapper::toDto);
+    }
+
+    @Override
+    public Page<RentalResponse> findTodaysReturns(Pageable pageable) {
+        Page<Rental> rentals = rentalRepository.findTodaysReturns(LocalDate.now(), pageable);
+        return rentals.map(rentalMapper::toDto);
+    }
+
+    @Override
+    public Page<RentalResponse> findOverdueRentals(Pageable pageable) {
+        Page<Rental> rentals = rentalRepository.findOverdueRentals(LocalDate.now(), pageable);
+        return rentals.map(rentalMapper::toDto);
+    }
 }
