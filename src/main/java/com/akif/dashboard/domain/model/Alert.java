@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
         @Index(name = "idx_alert_type", columnList = "type"),
         @Index(name = "idx_alert_severity", columnList = "severity"),
         @Index(name = "idx_alert_acknowledged", columnList = "acknowledged"),
-        @Index(name = "idx_alert_created", columnList = "created_at")
+        @Index(name = "idx_alert_created", columnList = "create_time")
     })
 @Getter
 @Setter
@@ -61,9 +61,6 @@ public class Alert extends BaseEntity {
     @Column(name = "acknowledged_by", length = 100)
     private String acknowledgedBy;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
     public void acknowledge(String adminUsername) {
         this.acknowledged = true;
         this.acknowledgedAt = LocalDateTime.now();
@@ -74,3 +71,4 @@ public class Alert extends BaseEntity {
         return Boolean.TRUE.equals(this.acknowledged);
     }
 }
+
