@@ -115,7 +115,8 @@ public class CarServiceImpl implements CarService {
     @Override
     @Transactional
     @Caching(evict = {
-        @CacheEvict(value = "cars", allEntries = true),
+        @CacheEvict(value = "cars", key = "#id"),
+        @CacheEvict(value = "cars", key = "'dto:' + #id"),
         @CacheEvict(value = "car-status-counts", allEntries = true),
         @CacheEvict(value = "car-statistics", allEntries = true)
     })
