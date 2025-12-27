@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -176,19 +177,26 @@ public class CarController {
     }
 
     @GetMapping(value = "/active")
-    @Operation(summary = "Get active cars", description = "Retrieve all active (not deleted) cars with pagination and optional currency conversion")
+    @Operation(summary = "Get active cars", 
+               description = "Retrieve all active (not deleted) cars with pagination, sorting, and optional currency conversion. " +
+                       "Supported sort fields: price, brand, model, productionYear, viewCount, likeCount, rating, createTime. " +
+                       "Example: ?sort=price,asc or ?sort=createTime,desc")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Active cars retrieved successfully",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Page.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid pagination parameters or currency")
+            @ApiResponse(responseCode = "400", description = "Invalid pagination parameters, sort field, or currency")
     })
     public ResponseEntity<Page<CarResponse>> getAllActiveCars(
-            @Parameter(description = "Pagination information") @PageableDefault(size = 20) Pageable pageable,
+            @Parameter(description = "Pagination and sorting. Use ?sort=field,direction (e.g., ?sort=price,asc)") 
+            @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC) Pageable pageable,
             @Parameter(description = "Target currency for price conversion") @RequestParam(required = false) CurrencyType currency) {
+        log.debug("GET /api/cars/active - Getting active cars with page: {}, size: {}, sort: {}", 
+                 pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
         Page<CarResponse> cars = carService.getAllActiveCars(pageable);
         if (currency != null) {
             cars.forEach(car -> applyPriceConversion(car, currency));
         }
+        log.info("Successfully retrieved {} active cars", cars.getTotalElements());
         return ResponseEntity.ok(cars);
     }
 
