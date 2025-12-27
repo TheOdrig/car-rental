@@ -1,3 +1,5 @@
+ALTER TABLE gallery.car ALTER COLUMN car_status_type TYPE VARCHAR(15);
+
 UPDATE gallery.car SET
     image_url = 'https://placehold.co/800x600/e2e8f0/475569?text=Volkswagen+Golf',
     thumbnail_url = 'https://placehold.co/400x300/e2e8f0/475569?text=VW+Golf'
