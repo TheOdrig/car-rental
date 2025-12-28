@@ -165,4 +165,16 @@ public interface CarRepository extends JpaRepository<Car, Long> {
     @Modifying
     @Query("UPDATE Car c SET c.likeCount = CASE WHEN c.likeCount > 0 THEN c.likeCount - 1 ELSE 0 END, c.updateTime = CURRENT_TIMESTAMP WHERE c.id = :id")
     void decrementLikeCount(@Param("id") Long id);
+
+    @Query("SELECT DISTINCT c.brand FROM Car c WHERE c.isDeleted = false AND c.brand IS NOT NULL ORDER BY c.brand")
+    List<String> findDistinctBrands();
+
+    @Query("SELECT DISTINCT c.transmissionType FROM Car c WHERE c.isDeleted = false AND c.transmissionType IS NOT NULL ORDER BY c.transmissionType")
+    List<String> findDistinctTransmissionTypes();
+
+    @Query("SELECT DISTINCT c.fuelType FROM Car c WHERE c.isDeleted = false AND c.fuelType IS NOT NULL ORDER BY c.fuelType")
+    List<String> findDistinctFuelTypes();
+
+    @Query("SELECT DISTINCT c.bodyType FROM Car c WHERE c.isDeleted = false AND c.bodyType IS NOT NULL ORDER BY c.bodyType")
+    List<String> findDistinctBodyTypes();
 }

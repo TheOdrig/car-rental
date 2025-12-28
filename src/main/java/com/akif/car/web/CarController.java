@@ -70,6 +70,21 @@ public class CarController {
         return ResponseEntity.ok(car);
     }
 
+    @GetMapping("/filter-options")
+    @Operation(summary = "Get filter options", 
+               description = "Returns unique values for filter dropdowns (brands, transmission types, fuel types, body types)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Filter options retrieved successfully",
+                    content = @Content(mediaType = "application/json", 
+                            schema = @Schema(implementation = com.akif.car.api.FilterOptionsResponse.class)))
+    })
+    public ResponseEntity<com.akif.car.api.FilterOptionsResponse> getFilterOptions() {
+        log.debug("GET /api/cars/filter-options");
+        com.akif.car.api.FilterOptionsResponse options = carService.getFilterOptions();
+        log.info("Successfully retrieved filter options");
+        return ResponseEntity.ok(options);
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create new car", description = "Create a new car with the provided information")
@@ -208,7 +223,7 @@ public class CarController {
             @ApiResponse(responseCode = "400", description = "Invalid pagination parameters or currency")
     })
     public ResponseEntity<Page<CarResponse>> getFeaturedCars(
-            @Parameter(description = "Pagination information") @PageableDefault(size = 10) Pageable pageable,
+            @Parameter(description = "Pagination information") @PageableDefault(size = 20) Pageable pageable,
             @Parameter(description = "Target currency for price conversion") @RequestParam(required = false) CurrencyType currency) {
         log.debug("GET /api/cars/featured - Getting featured cars with page: {}, size: {}", pageable.getPageNumber(), pageable.getPageSize());
         Page<CarResponse> cars = carService.getFeaturedCars(pageable);
